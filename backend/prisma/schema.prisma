@@ -1,0 +1,63 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id    Int     @id @default(autoincrement())
+  email String  @unique
+  name  String?
+}
+
+model usuarios {
+  id_usuario Int      @id @default(autoincrement())
+  passaword  String   @db.VarChar(100)
+  token      String?  @db.Text
+  chave      String   @db.VarChar(20)
+  nome       String   @db.VarChar(40)
+  email      String   @db.VarChar(60)
+  clube      String   @db.VarChar(30)
+  status     String   @db.VarChar(10)
+  validado   Boolean
+  usuario    String   @db.VarChar(20)
+  dt_create  DateTime @db.DateTime(0)
+}
+
+model Image {
+  id        Int      @id @default(autoincrement())
+  chave     String
+  fileName  String
+  filePath  String   @db.Text
+  tag       String   @db.VarChar(20)
+  createdAt DateTime @default(now())
+}
+
+model validacao {
+  id_validacao Int    @id @default(autoincrement())
+  token        String @db.VarChar(100)
+  nome         String @db.VarChar(20)
+  id_usuario   Int
+  email        String @db.VarChar(60)
+
+  @@index([id_usuario], map: "fk_lista_acesso")
+}
+
+model controle_chave {
+  id_chave Int    @id @default(autoincrement())
+  chave    String @db.VarChar(60)
+}
+
+model atividades {
+  id_atividade Int      @id @default(autoincrement())
+  id_ordem     Int
+  usuario      String   @db.VarChar(40)
+  titulo       String   @db.Text
+  texto        String   @db.Text
+  link         String   @db.Char(200)
+  dt_criacao   DateTime @db.Timestamp(0)
+  publicada    Boolean
+}
