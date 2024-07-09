@@ -75,5 +75,34 @@ module.exports = class AtividadeRepository {
     }
   }
 
+  async obertVideos() {
+    try {
+      const retorno = await this.prisma.videos.findMany()
+      return retorno
+    } catch (error) {
+      console.log("error", error);
+    }
+  }
+
+  async gravaVideos(dados) {
+    try {
+      const retorno = await this.prisma.videos.create({
+        data: {
+          id_ordem: Number(dados.id_ordem),
+          usuario: dados.usuario,
+          titulo: dados.titulo,
+          texto: dados.texto,
+          link: dados.link,
+          dt_criacao: new Date(),
+          publicada: true
+        }
+      })
+      return retorno
+    } catch (error) {
+      console.log("error", error);
+    }
+
+  }
+
 }
 

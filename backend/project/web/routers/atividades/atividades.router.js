@@ -17,10 +17,15 @@ router.get('/usuarios/:token', (req, res) => _ctrl.usuario(req, res));
 router.get('/avatar',  (req, res) => _ctrl.avatar(req, res));
 
 router.get('/obterAtividade',  (req, res) => _ctrl.obterAtividade(req, res));
+router.get('/obertVideos',  (req, res) => _ctrl.obertVideos(req, res));
+
 
 router.post('/imagensvisitas', upload.single('file'), (req, res) => _ctrl.imagens(req, res));
 router.post('/gravaAtividade', upload.single('file'), (req, res) => _ctrl.gravaAtividade(req, res));
 router.post('/editarAtividade', upload.single('file'), (req, res) => _ctrl.editarAtividade(req, res));
+router.post('/gravaVideos',  (req, res) => _ctrl.gravaVideos(req, res));
+
+
 
 
 

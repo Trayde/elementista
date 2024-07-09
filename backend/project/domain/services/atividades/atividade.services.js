@@ -23,12 +23,26 @@ module.exports = class AtividadeServices {
     }
 
 
+   async obertVideos() {
+        const retorno = await this.atividadeRepository.obertVideos();
+
+        return retorno
+    }
+
     async editarAtividade(dados) {
 
         const retorno = await this.atividadeRepository.editarAtividade(dados);
 
         
         return retorno
+    }
+
+
+
+    async gravaVideos(dados) {
+        console.log("service visitas backend gravaVideos",dados  );
+
+        return await this.atividadeRepository.gravaVideos(dados);
     }
 
 

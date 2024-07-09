@@ -10,25 +10,30 @@
                             <input type="text" class="col-12 col-xl-12  mb-xl-0" v-model="content.titulo">
                         </h4>
                     </div>
-                    <div v-if="content.link" class="modal-body">
-                        <img class="card-img-top" :src="content.link" style="height: 200px;" alt="Card image cap">
-                    </div>
-                    <div v-else class="modal-body">
-                        <img class="card-img-top" src="../../../assets/imagemPadao.png" style="height: 200px;"
-                            alt="Card image cap">
+                    <div class="">
+                        <h4 class="modal-title fs-8" id="exampleModalLabel">
+                            <label class="form-label">Link</label>
+                            <input type="text" class="col-12 col-xl-12 mb-xl-0" v-model="content.link">
+                        </h4>
                     </div>
                     <div class="modal-body">
-                        <label for="imageUpload" class="form-label">Upload de Imagem</label>
-                        <input type="file" @change="onFileChange">
+                        <iframe 
+                            width="420" 
+                            height="200"
+                            :src="content.link"
+                            title="YouTube video player" 
+                            frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            referrerpolicy="strict-origin-when-cross-origin" 
+                            allowfullscreen>
+                        </iframe>
                     </div>
-
                     <div class="modal-body">
                         <label for="activAdmin" class="form-label">Descrição Texto</label>
                         <textarea class="form-control" v-model="content.texto" id="activAdmin" rows="10"></textarea>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
-                            @click="hide">Fechar</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="hide">Fechar</button>
                         <button type="submit" class="btn btn-primary">Salvar</button>
                     </div>
                 </div>
@@ -41,50 +46,32 @@
 import ApiMethodsAtividades from '@/views/conteudo/service/service.atividades'
 
 export default {
-    name: 'ModalAtividade',
+    name: 'ModalVideos',
     data() {
         return {
             isVisible: false,
             content: {
-                id_atividade: null,
                 id_ordem: null,
                 usuario: "",
                 titulo: "",
                 texto: "",
                 link: "",
-                selectedFile: null,
-                imageName: "" // Adiciona o nome da imagem
             },
         };
     },
 
     methods: {
-        show(dados) {
-            console.log("dados ===> Modal", dados);
-            this.content = {
-                id_atividade: dados.id_atividade,
-                id_ordem: dados.id_ordem,
-                usuario: dados.usuario,
-                titulo: dados.titulo,
-                texto: dados.texto,
-                link: dados.link,
-                imageName: "" // Limpa o nome da imagem ao exibir o modal
-            };
+        show() {
+            
             this.isVisible = true;
         },
         hide() {
             this.isVisible = false;
         },
-        onFileChange(event) {
-            const file = event.target.files[0];
-            this.content.selectedFile = file;
-            this.content.link = URL.createObjectURL(file); // Atualiza a visualização da imagem
-            this.content.imageName = file.name; // Armazena o nome do arquivo
-        },
         salvar() {
             console.log("salve", this.content);
             const dados = this.content;
-            ApiMethodsAtividades.gravaAtividade(dados).then((res) => {
+            ApiMethodsAtividades.gravaVideos(dados).then((res) => {
                 if (res.data === 'sucesso') {
                     this.isVisible = false;
                     setTimeout(function () {

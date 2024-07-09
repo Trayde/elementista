@@ -25,8 +25,11 @@ module.exports = class UsuariosController {
                 imageName: req.file.filename 
               }
             const response = await this.atividadeServices.gravaAtividade(dados);
-
-            return res.status(200).send(response);
+            if (response) {
+                return res.status(200).send("sucesso");
+             }else {
+                 return res.status(200).send("falha");
+             }
         } catch (error) {
             return res.status(500).send(error);
         }
@@ -86,6 +89,36 @@ module.exports = class UsuariosController {
             const response = await this.atividadeServices.obterAtividade();
             console.log("ret", response);
             return res.status(200).send(response);
+        } catch (error) {
+            return res.status(500).send(error);
+        }
+    }
+
+    async obertVideos(req, res) {
+        try {
+            const response = await this.atividadeServices.obertVideos();
+            console.log("ret", response);
+            return res.status(200).send(response);
+        } catch (error) {
+            return res.status(500).send(error);
+        }
+    }
+
+    async gravaVideos(req, res){
+        try {
+          const dados = {
+                id_ordem: req.body.id_ordem ,
+                usuario: req.body.usuario ,
+                titulo: req.body.titulo ,
+                texto:  req.body.texto,
+                link:  req.body.link 
+              }
+            const response = await this.atividadeServices.gravaVideos(dados);
+            if (response) {
+                return res.status(200).send("sucesso");
+             }else {
+                 return res.status(200).send("falha");
+             }
         } catch (error) {
             return res.status(500).send(error);
         }

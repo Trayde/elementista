@@ -16,6 +16,18 @@ const apiMethodsAtividades = {
     }
   },
 
+  async obertVideos() {
+    try {
+      let response = []
+      response = await axios.get('https://apienerge.apololab.net:5000/atividades/obertVideos');
+      console.log("response.data", response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao obter usuarios:', error);
+      throw error;
+    }
+  },
+
   async gravaAtividade(dados) {
     const formData = new FormData();
     formData.append('id_atividade', dados.id_atividade);
@@ -42,6 +54,18 @@ const apiMethodsAtividades = {
     }
   },
 
+  async gravaVideos(dados) {
+   
+    try {
+      const response = await axios.post('https://apienerge.apololab.net:5000/atividades/gravaVideos', dados);
+
+      return response
+
+    } catch (error) {
+      console.error('Erro ao gravaAtividade:', error);
+      throw error;
+    }
+  },
 
  async editarAtividade(dados)
   {

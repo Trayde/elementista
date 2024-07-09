@@ -58,6 +58,19 @@ model atividades {
   titulo       String   @db.Text
   texto        String   @db.Text
   link         String   @db.Char(200)
+  imageName    String   @db.Text
   dt_criacao   DateTime @db.Timestamp(0)
   publicada    Boolean
 }
+
+model videos {
+  id_atividade Int      @id @default(autoincrement())
+  id_ordem     Int
+  usuario      String   @db.VarChar(40)
+  titulo       String   @db.Text
+  texto        String   @db.Text
+  link         String   @db.Char(200)
+  dt_criacao   DateTime @db.Timestamp(0)
+  publicada    Boolean
+}
+
