@@ -19,22 +19,22 @@
               <ul class="nav flex-column sub-menu">
                 <li class="nav-item"><router-link class="nav-link" to="/atividades">Atividades</router-link></li>
                 <li class="nav-item"><router-link class="nav-link" to="/videos">Vídeos</router-link></li> 
-                <li class="nav-item"> <a class="nav-link" href="#">Tutoriais</a></li>
+                <li class="nav-item"><router-link class="nav-link" to="/tutoriais">Tutoriais</router-link></li> 
               </ul>
             </div>
           </li>
           <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="#form-elements" aria-expanded="false" aria-controls="form-elements">
+            <a class="nav-link" data-toggle="collapse" href="#form-elements-lab" aria-expanded="false" aria-controls="form-elements-lab">
               <i class="icon-columns menu-icon"></i>
               <span class="menu-title">Laboratório</span>
               <i class="menu-arrow"></i>
             </a>
-            <div class="collapse" id="form-elements">
+            <div class="collapse" id="form-elements-lab">
               <ul class="nav flex-column sub-menu">
-                <li class="nav-item"><a class="nav-link" href="#">Água</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Ar</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Terra</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Fogo</a></li>
+                <li class="nav-item"><router-link class="nav-link" to="/agua">Água</router-link></li> 
+                <li class="nav-item"><router-link class="nav-link" to="/ar">Ar</router-link></li> 
+                <li class="nav-item"><router-link class="nav-link" to="/terra">Terra</router-link></li> 
+                <li class="nav-item"><router-link class="nav-link" to="/fogo">Fogo</router-link></li> 
               </ul>
             </div>
           </li>
@@ -47,11 +47,16 @@
             
           </li>
           <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="#tables" aria-expanded="false" aria-controls="tables">
+            <a class="nav-link" data-toggle="collapse" href="#form-elements-post" aria-expanded="false" aria-controls="tables">
               <i class="icon-grid-2 menu-icon"></i>
               <span class="menu-title">Postagem</span>
               <i class="menu-arrow"></i>
             </a>
+            <div class="collapse" id="form-elements-post">
+              <ul class="nav flex-column sub-menu">
+                <li class="nav-item"><router-link class="nav-link" to="/noticias">Notícias</router-link></li> 
+              </ul>
+            </div>
           </li>
           
         </ul>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Download do Arquivo</title>
+  <!-- Link do Bootstrap 5 CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    /* Define a imagem de fundo e configurações responsivas */
+    body {
+      background-image: url('./fundo_elementis.png');
+      background-size: cover; /* Garante que a imagem cubra toda a tela */
+      background-position: center; /* Centraliza a imagem */
+      background-repeat: no-repeat; /* Impede a repetição da imagem */
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white; /* Para o texto aparecer bem em cima da imagem */
+      text-align: center;
+    }
+  </style>
+
+</head>
+<body class="d-flex align-items-center justify-content-center vh-100 bg-light">
+
+  <div class="text-center">
+    <h1 id="fileNameDisplay" class=""></h1>
+    <button id="downloadButton" class="btn btn-primary mt-3" style="display: none; ">Baixar Arquivo</button>
+  </div>
+
+  <script>
+    // Função para extrair o valor da query string
+    function getQueryParam(param) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
+    }
+
+    // Obtém o nome do arquivo da query string
+    const fileName = getQueryParam('file');
+
+    // Referência aos elementos HTML
+    const fileNameDisplay = document.getElementById('fileNameDisplay');
+    const downloadButton = document.getElementById('downloadButton');
+
+    // Verifica se o nome do arquivo foi fornecido
+    if (fileName) {
+      // Mostra o nome do arquivo e exibe o botão
+      fileNameDisplay.textContent = `Arquivo para download: ${fileName}`;
+      downloadButton.style.display = 'inline';
+
+      // Adiciona o evento de clique no botão para iniciar o download
+      downloadButton.addEventListener('click', function() {
+        // Cria a URL completa para o arquivo no diretório public
+        const fileUrl = `${window.location.origin}/ARDUINO-CODIGOS/${fileName}`;
+
+        // Cria um link temporário para download
+        const link = document.createElement('a');
+        link.href = fileUrl;
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      });
+    } else {
+      // Exibe mensagem de erro se o nome do arquivo não foi encontrado
+      fileNameDisplay.textContent = "Parâmetro de nome do arquivo não encontrado na URL.";
+    }
+  </script>
+
+</body>
+</html>

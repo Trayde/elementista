@@ -1,11 +1,16 @@
 <template>
-    Tutorias
+    <AtividadesComponete></AtividadesComponete>
 </template>
 
 <script>
-
+import AtividadesComponete from '@/components/conteudo/TutoriaisComponete.vue';
 export default {
-    name: ' Tutorias'
+    name: ' Tutorias',
+    components: {
+        AtividadesComponete
+    }
+
+
 }
 
 </script>

@@ -17,14 +17,20 @@ module.exports = class AtividadeRepository {
           id_ordem: Number(dados.id_ordem),
           usuario: dados.usuario,
           titulo: dados.titulo,
-          texto: dados.texto,
+          texto:  dados.texto,
           link: dados.link,
           imageName: dados.imageName,
           dt_criacao: new Date(),
-          publicada: true
+          publicada: true,
+          tag: dados.tag
         }
-      })
-      return retorno
+      })      
+
+      console.log("retorno banco ", retorno);
+      
+      return  {
+        mensagen: "sucesso"
+      }
     } catch (error) {
       console.log("error", error);
     }
@@ -51,7 +57,8 @@ module.exports = class AtividadeRepository {
           link: dados.link,
           imageName: dados.imageName,
           dt_criacao: new Date(),
-          publicada: true
+          publicada: true,
+          tag: dados.tag
         }
   
       })
@@ -75,9 +82,36 @@ module.exports = class AtividadeRepository {
     }
   }
 
+  async obterAtividadeId(id) {
+
+    try {
+      const retorno = await this.prisma.atividades.findMany({
+        where: {
+          id_atividade: Number(id)
+        }
+      })
+      return retorno
+    } catch (error) {
+      console.log("error", error);
+    }
+  }
+
   async obertVideos() {
     try {
       const retorno = await this.prisma.videos.findMany()
+      return retorno
+    } catch (error) {
+      console.log("error", error);
+    }
+  }
+
+  async obertVideosId(id){
+    try {
+      const retorno = await this.prisma.videos.findMany({
+        where: {
+          id_videos: Number(id)
+        }
+      })
       return retorno
     } catch (error) {
       console.log("error", error);
@@ -94,13 +128,48 @@ module.exports = class AtividadeRepository {
           texto: dados.texto,
           link: dados.link,
           dt_criacao: new Date(),
-          publicada: true
+          publicada: true,
+          tag: dados.tag
         }
       })
       return retorno
     } catch (error) {
       console.log("error", error);
     }
+
+  }
+
+
+  async editarVideos(dados) {
+
+    console.log("repositorio", dados);
+
+    try {
+      const retorno = await this.prisma.videos.update({
+  
+        where: {
+          id_videos: Number(dados.id_videos)
+        },
+  
+        data: {
+          id_ordem: Number(dados.id_ordem),
+          usuario: dados.usuario,
+          titulo: dados.titulo,
+          texto: dados.texto,
+          link: dados.link,
+          dt_criacao: new Date(),
+          publicada: true,
+          tag: dados.tag
+        }
+  
+      })
+
+      return retorno
+    } catch (error) {
+      console.log("erro", error);
+    }
+    
+
 
   }
 

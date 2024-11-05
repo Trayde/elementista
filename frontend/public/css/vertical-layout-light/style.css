@@ -16167,7 +16167,7 @@ button.bg-dark:focus,
   flex-direction: row !important;
 }
 
-.flex-column, .nav-tabs.nav-tabs-vertical, .nav-tabs.nav-tabs-vertical-custom, .nav-pills.nav-pills-vertical, .email-wrapper .mail-sidebar .menu-bar .profile-list-item a .user {
+ .nav-tabs.nav-tabs-vertical, .nav-tabs.nav-tabs-vertical-custom, .nav-pills.nav-pills-vertical, .email-wrapper .mail-sidebar .menu-bar .profile-list-item a .user {
   flex-direction: column !important;
 }
 
@@ -23758,10 +23758,10 @@ dl li {
 }
 
 .icon-data-list li img {
-  width: 40px;
-  height: 40px;
+  width: 80px;
+  height: 60px;
   margin-right: 10px;
-  border-radius: 100%;
+  border-radius: 10%;
 }
 
 /* Modals */
