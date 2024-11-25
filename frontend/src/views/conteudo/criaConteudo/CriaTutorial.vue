@@ -3,7 +3,7 @@
         <div class="col-md-10 grid-margin">
             <div class="row">
                 <div class="col-12 col-xl-8 mb-4 mb-xl-0">
-                    <h3 class="font-weight-bold white">Criar Água</h3>
+                    <h3 class="font-weight-bold white">Criar Tutorial</h3>
                 </div>
             </div>
         </div>
@@ -29,15 +29,11 @@
             <div class="card-body">
                 <div class="">
                     <h4 class="modal-title fs-8" id="exampleModalLabel">
-                        <label class="form-label">Titulo</label>
+                        <label class="form-label">Nome do arquivo .ino</label>
                         <input type="text" class="col-12 col-xl-12 mb-xl-0 form-control" v-model="content.titulo">
                         <br>
                         <input type="text" class="col-4 col-xl-4 mb-xl-0 form-control" placeholder="TAG#"
                             v-model="content.tag">
-                            <br>
-                            <label class="form-label">Nome arquivo .ino</label>    
-                            <input type="text" class="col-4 col-xl-4 mb-xl-0 form-control" placeholder="nome do arquivo .ino"
-                            v-model="content.arquivo">     
                     </h4>
                 </div>
                 <div >
@@ -72,7 +68,6 @@ export default {
                 titulo: "",
                 texto: "", // Este campo armazenará o HTML gerado pelo Quill
                 link: "",
-                arquivo: "",
                 selectedFile: null,
                 imageName: "", // Adiciona o nome da imagem
                 tag: ""
@@ -117,14 +112,14 @@ export default {
             
             console.log("salve", this.content);
             const dados = this.content;
-            ApiMethodsAtividades.gravaAgua(dados).then((res) => {
+            ApiMethodsAtividades.gravaTutoriais(dados).then((res) => {
                 console.log("res tela", res);
 
                 if (res.data === 'sucesso') {
                     this.isVisible = false;
                     setTimeout(() => {
                         this.loading = false;
-                        this.$router.push("/agua"); // Redirecionar para a rota raiz
+                        this.$router.push("/tutorial"); // Redirecionar para a rota raiz
                     }, 3000);
 
                 } else {

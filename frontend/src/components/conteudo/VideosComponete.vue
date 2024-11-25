@@ -3,15 +3,20 @@
         <div class="col-md-10 grid-margin">
             <div class="row">
                 <div class="col-12 col-xl-8 mb-4 mb-xl-0">
-                    <h3 class="font-weight-bold">Videos</h3>
+                    <h3 class="font-weight-bold white">Videos</h3>
                 </div>
             </div>
         </div>
         <div class="justify-content-end d-flex">
             <div class="dropdown flex-md-grow-1 flex-xl-grow-0">
                 <a @click="criarAtividade(dados)">
-                    <i style="font-size: 25px;" class="mdi mdi-note-plus"></i>
+                    <img :src="avatar" style="width: 90px; height: 95px;">
                 </a>
+            </div>
+        </div>
+        <div v-if="loading" class="spinner-container">
+            <div class="base_spinner">
+                <img src="../../../public/img/Terralinav2.png" alt="Spinner" class="spinner-image">
             </div>
         </div>
     </div>
@@ -22,11 +27,11 @@
                     <div class="card-body">
                         <div class="template-demo">
                             <button @click="filterByTag('')"
-                                :class="['btn btn-inverse-secondary btn-fw', { 'btn-primary': selectedTag === '' }]">
+                                :class="['btn btn-inverse-orange btn-fw', { 'btn-primary': selectedTag === '' }]">
                                 Todas
                             </button>
                             <button v-for="tag in uniqueTags" :key="tag" @click="filterByTag(tag)"
-                                :class="['btn btn-inverse-secondary btn-fw', { 'btn-primary': selectedTag === tag }]">
+                                :class="['btn btn-inverse-orange btn-fw', { 'btn-primary': selectedTag === tag }]">
                                 {{ tag }}
                             </button>
                         </div>
@@ -60,6 +65,7 @@
                                 <div class="dropdown-menu dropdown-menu-right navbar-dropdown"
                                     aria-labelledby="profileDropdown">
                                     <a class="dropdown-item" @click="editarVideos(dados)">Editar</a>
+                                    <a class="dropdown-item" @click="deletaAtividade(dados.id_videos)">Deletar</a>
                                 </div>
                             </li>
                             </li>
@@ -76,10 +82,11 @@
 
 <script>
 import ApiMethodsAtividades from '../../views/conteudo/service/service.atividades'
-
+import avatar from '../../../public/img/Terralinav2.png'
 import { QuillEditor } from '@vueup/vue-quill';
 import '@vueup/vue-quill/dist/vue-quill.snow.css';
 import DOMPurify from 'dompurify';
+import Swal from 'sweetalert2';
 
 
 export default {
@@ -89,6 +96,7 @@ export default {
     },
     data() {
         return {
+            loading: false,
             videos: {
                 id_videos: "",
                 id_ordem: "",
@@ -101,7 +109,8 @@ export default {
                 tag: ""
             },
             ativiArry: [],
-            selectedTag: ""
+            selectedTag: "",
+            avatar: avatar
         }
     },
     computed: {
@@ -158,6 +167,42 @@ export default {
             this.$router.push({
                 path: "/editar-videos",
                 query: { videos: JSON.stringify(dados.id_videos) }
+            });
+        },
+        async deletaAtividade(itemId) {
+            // Exibe o SweetAlert2 para confirmação
+            const result = await Swal.fire({
+                title: "Tem certeza?",
+                text: "Você não poderá desfazer essa ação!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Sim, excluir!",
+                cancelButtonText: "Cancelar",
+            });
+
+            // Se o usuário confirmar, remove o item
+            if (result.isConfirmed) {
+                this.deleteItem(itemId);
+               
+            }
+        },
+        deleteItem(itemId) {
+            this.loading = true 
+           ApiMethodsAtividades.deleteVideos(itemId).then((res) => {
+            console.log("delete", res);
+            
+                if (res.mensagen === 'sucesso') {
+                    
+                    this.isVisible = false;
+                    setTimeout(() => {
+                        this.loading = false;
+                        this.$router.push("/videos"); // Redirecionar para a rota raiz
+                    }, 3000);
+                } else {
+                    this.loading = false; // Oculta o spinner em caso de erro
+                }
             });
         },
         verMais(dados) {
@@ -220,5 +265,45 @@ export default {
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+/* Container do spinner */
+.spinner-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+/* Base do spinner */
+.base_spinner {
+    position: relative;
+    width: 100px;
+    height: 100px;
+}
+
+/* Imagem do spinner */
+.spinner-image {
+    width: 100%;
+    height: auto;
+    animation: spin 2s linear infinite;
+    /* Gira continuamente */
+}
+
+/* Animação de rotação */
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 </style>

@@ -1,9 +1,9 @@
-<template>
-    <div class="row">
+<template >
+    <div class="row"  >
         <div class="col-md-10 grid-margin">
             <div class="row">
                 <div class="col-12 col-xl-8 mb-4 mb-xl-0">
-                    <h3 class="font-weight-bold">Ar</h3>
+                    <h3 class="font-weight-bold white">Ar</h3>
                 </div>
             </div>
         </div>
@@ -21,10 +21,10 @@
                 <div class="col-md-12">
                     <div class="card-body">
                         <div class="template-demo">
-                            <button @click="filterByTag('')" :class="['btn btn-inverse-secondary btn-fw', { 'btn-primary': selectedTag === '' }]">
+                            <button @click="filterByTag('')" :class="['btn btn-inverse-orange btn-fw', { 'btn-primary': selectedTag === '' }]">
                                 TODAS
                             </button>
-                            <button v-for="tag in uniqueTags" :key="tag" @click="filterByTag(tag)" :class="['btn btn-inverse-secondary btn-fw', { 'btn-primary': selectedTag === tag }]">
+                            <button v-for="tag in uniqueTags" :key="tag" @click="filterByTag(tag)" :class="['btn btn-inverse-orange btn-fw', { 'btn-primary': selectedTag === tag }]">
                                 {{ tag }}
                             </button>
                         </div>
@@ -64,15 +64,16 @@
 
 <script>
 // import ApiMethodsAtividades from '../../views/conteudo/service/service.atividades'
-// import { QuillEditor } from '@vueup/vue-quill';
-// import '@vueup/vue-quill/dist/vue-quill.snow.css';
-// import DOMPurify from 'dompurify';
+import { QuillEditor } from '@vueup/vue-quill';
+import '@vueup/vue-quill/dist/vue-quill.snow.css';
+import DOMPurify from 'dompurify';
+import   arrays  from '../../localStore/turoriais'
 
 export default {
     name: 'Tutoriais',
-    // components: {
-    //     QuillEditor
-    // },
+    components: {
+        QuillEditor
+    },
     data() {
         return {
             atividade: {
@@ -125,6 +126,24 @@ export default {
             //     publicada: at.publicada,
             //     tag: at.tag
             // }));
+
+
+            let dados =  arrays.filter((a) => a.tag === 'CO2' || a.tag === 'poeira' || a.tag === 'velocidade')
+            this.ativiArry = dados.map((at) => ({
+                id_atividade: at.id_atividade,
+                id_ordem: at.id_ordem,
+                usuario: at.usuario,
+                titulo: at.titulo,
+                texto: at.texto,
+                link: at.imageName,
+                imageName: at.imageName,
+                dt_criacao: at.dt_criacao,
+                publicada: at.publicada,
+                tag: at.tag
+            }));
+
+
+
         },
         filterByTag(tag) {
             this.selectedTag = tag;
@@ -143,7 +162,7 @@ export default {
             
 
             this.$router.push({
-                path: "/ver-conteudo",
+                path: "/ver-ar",
                 query: { atividades: JSON.stringify(dados.id_atividade) }
             });
 

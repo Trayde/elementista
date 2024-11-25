@@ -3,15 +3,21 @@
         <div class="col-md-10 grid-margin">
             <div class="row">
                 <div class="col-12 col-xl-8 mb-4 mb-xl-0">
-                    <h3 class="font-weight-bold">Atividades</h3>
+                    <h3 class="font-weight-bold white ">Atividades</h3>
                 </div>
             </div>
         </div>
         <div class="justify-content-end d-flex">
             <div class="dropdown flex-md-grow-1 flex-xl-grow-0">
                 <a @click="criarAtividade(dados)">
-                    <i style="font-size: 25px;" class="mdi mdi-note-plus"></i>
+                    <!-- <i style="font-size: 25px;" class="mdi mdi-note-plus"></i> -->
+                    <img :src="avatar" style="width: 90px; height: 80px;">
                 </a>
+            </div>
+        </div>
+        <div v-if="loading" class="spinner-container">
+            <div class="base_spinner">
+                <img :src="avatar" alt="Spinner" class="spinner-image">
             </div>
         </div>
     </div>
@@ -21,10 +27,12 @@
                 <div class="col-md-12">
                     <div class="card-body">
                         <div class="template-demo">
-                            <button @click="filterByTag('')" :class="['btn btn-inverse-secondary btn-fw', { 'btn-primary': selectedTag === '' }]">
+                            <button @click="filterByTag('')"
+                                :class="['btn btn-inverse-orange btn-fw ', { 'btn-primary': selectedTag === '' }]">
                                 TODAS
                             </button>
-                            <button v-for="tag in uniqueTags" :key="tag" @click="filterByTag(tag)" :class="['btn btn-inverse-secondary btn-fw', { 'btn-primary': selectedTag === tag }]">
+                            <button v-for="tag in uniqueTags" :key="tag" @click="filterByTag(tag)"
+                                :class="['btn white btn-inverse-orange btn-fw', { 'btn-primary': selectedTag === tag }]">
                                 {{ tag }}
                             </button>
                         </div>
@@ -39,20 +47,22 @@
                 <div class="icon-right">
                     <ul class="navbar-nav navbar-nav-right">
                         <li class="nav-item dropdown">
-                            <li class="nav-item nav-profile dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
-                                    <i class="mdi mdi-dots-vertical"></i>
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
-                                    <a class="dropdown-item" @click="editarAtividade(dados)">Editar</a>
-                                </div>
-                            </li>
+                        <li class="nav-item nav-profile dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
+                                <i class="mdi mdi-dots-vertical"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right navbar-dropdown"
+                                aria-labelledby="profileDropdown">
+                                <a class="dropdown-item" @click="editarAtividade(dados)">Editar</a>
+                                <a class="dropdown-item" @click="deletaAtividade(dados.id_atividade)">Deletar</a>
+                            </div>
+                        </li>
                         </li>
                     </ul>
                 </div>
                 <div class="card-body">
                     <p class="card-title">{{ dados.titulo }}</p>
-                    <img class="card-img-top" :src="dados.link" style="height: 200px;" alt="Card image cap">
+                    <img class="card-img-top" :src="dados.link" alt="Card image cap">
                     <br><br>
                     <p class="font-weight-500 truncated-text" v-html="sanitizeHtml(dados.texto)"></p>
                     <a class="btn btn-primary mt-3" @click="verMais(dados)">Ver mais</a>
@@ -64,10 +74,11 @@
 
 <script>
 import ApiMethodsAtividades from '../../views/conteudo/service/service.atividades'
+import avatar from '../../../public/img/Arteusv2.png'
 import { QuillEditor } from '@vueup/vue-quill';
 import '@vueup/vue-quill/dist/vue-quill.snow.css';
 import DOMPurify from 'dompurify';
-
+import Swal from 'sweetalert2';
 export default {
     name: 'AtividadesComponete',
     components: {
@@ -75,6 +86,7 @@ export default {
     },
     data() {
         return {
+            loading: false,
             atividade: {
                 id_atividade: "",
                 id_ordem: "",
@@ -88,6 +100,7 @@ export default {
             },
             ativiArry: [],
             selectedTag: '', // Armazena a tag selecionada, '' significa todas as tags
+            avatar: avatar
         }
     },
     computed: {
@@ -112,7 +125,7 @@ export default {
         async listaAtividades() {
             const retorno = await ApiMethodsAtividades.obertAtividade()
             console.log("reotno tela atividade", retorno);
-            
+
             this.ativiArry = retorno.map((at) => ({
                 id_atividade: at.id_atividade,
                 id_ordem: at.id_ordem,
@@ -138,9 +151,46 @@ export default {
                 query: { atividades: JSON.stringify(dados.id_atividade) }
             });
         },
+        async deletaAtividade(itemId) {
+            // Exibe o SweetAlert2 para confirmação
+            const result = await Swal.fire({
+                title: "Tem certeza?",
+                text: "Você não poderá desfazer essa ação!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Sim, excluir!",
+                cancelButtonText: "Cancelar",
+            });
+
+            // Se o usuário confirmar, remove o item
+            if (result.isConfirmed) {
+                this.deleteItem(itemId);
+               
+            }
+        },
+        deleteItem(itemId) {
+            this.loading = true 
+           ApiMethodsAtividades.deleteAtividade(itemId).then((res) => {
+            console.log("delete", res);
+            
+                if (res.mensagen === 'sucesso') {
+                    
+                    this.isVisible = false;
+                    setTimeout(() => {
+                        this.loading = false;
+                        this.$router.push("/atividades"); // Redirecionar para a rota raiz
+                    }, 3000);
+                } else {
+                    this.loading = false; // Oculta o spinner em caso de erro
+                }
+            });
+        },
+
         verMais(dados) {
             // Redirecionar para a página de detalhes ou outra página
-            
+
 
             this.$router.push({
                 path: "/ver-conteudo",
@@ -148,7 +198,7 @@ export default {
             });
 
 
-            
+
         }
     }
 }
@@ -176,9 +226,50 @@ export default {
 
 .truncated-text {
     display: -webkit-box;
-    -webkit-line-clamp: 3; /* Número de linhas que deseja mostrar */
+    -webkit-line-clamp: 3;
+    /* Número de linhas que deseja mostrar */
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+/* Container do spinner */
+.spinner-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+/* Base do spinner */
+.base_spinner {
+    position: relative;
+    width: 100px;
+    height: 100px;
+}
+
+/* Imagem do spinner */
+.spinner-image {
+    width: 100%;
+    height: auto;
+    animation: spin 2s linear infinite;
+    /* Gira continuamente */
+}
+
+/* Animação de rotação */
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 </style>

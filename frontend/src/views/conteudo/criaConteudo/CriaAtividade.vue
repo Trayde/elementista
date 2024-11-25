@@ -3,22 +3,27 @@
         <div class="col-md-10 grid-margin">
             <div class="row">
                 <div class="col-12 col-xl-8 mb-4 mb-xl-0">
-                    <h3 class="font-weight-bold">Criar Atividades</h3>
+                    <h3 class="font-weight-bold white">Criar Atividades</h3>
                 </div>
             </div>
         </div>
+        <div v-if="loading" class="spinner-container">
+            <div class="base_spinner">
+                <img :src="avatar" alt="Spinner" class="spinner-image">
+            </div>
+        </div>
     </div>
-    <div class="card" style="max-width: 50rem;">
+    <div class="card" style="max-width: 70rem;">
         <form @submit.prevent="salvar">
             <div v-if="content.link" class="modal-body">
                 <img class="card-img-top" :src="content.link" style="height: 400px;" alt="Card image cap">
             </div>
             <div v-else class="modal-body">
-                <img class="card-img-top" src="../../../assets/imagemPadao.png" style="height: 400px"
-                    alt="Card image cap">
+                <img class="card-img-top" src="../../../../public/img/LOGO_ELEMENTISTA_V1_FUNDO-VERDE.jpg"
+                    style="height: 400px" alt="Card image cap">
             </div>
             <div class="modal-body">
-                <label for="imageUpload" class="form-label">Upload de Imagem</label>
+                <label for="imageUpload" class="form-label">Upload de Imagem&nbsp;</label>
                 <input type="file" @change="onFileChange">
             </div>
             <div class="card-body">
@@ -31,7 +36,8 @@
                             v-model="content.tag">
                     </h4>
                 </div>
-                <div class="modal-body">
+                <div>
+                    <br>
                     <label for="activAdmin" class="form-label">Descrição Texto</label>
                     <div ref="editorContainer"></div>
                 </div>
@@ -45,6 +51,7 @@
 
 <script>
 import ApiMethodsAtividades from '@/views/conteudo/service/service.atividades'
+import avatar from '../../../../public/img/Arteusv2.png'
 import Quill from 'quill';
 import 'quill/dist/quill.snow.css';
 
@@ -52,6 +59,7 @@ export default {
     name: "CriaAtividade",
     data() {
         return {
+            loading: false,
             isVisible: false,
             content: {
                 id_atividade: null,
@@ -64,7 +72,8 @@ export default {
                 imageName: "", // Adiciona o nome da imagem
                 tag: ""
             },
-            quill: null
+            quill: null,
+            avatar: avatar
         };
     },
 
@@ -97,9 +106,9 @@ export default {
         },
 
         salvar() {
-            // Atualiza o conteúdo com o HTML gerado pelo Quill
+            this.loading = true;
             this.content.texto = this.quill.root.innerHTML;
-            
+
             console.log("salve", this.content);
             const dados = this.content;
             ApiMethodsAtividades.gravaAtividade(dados).then((res) => {
@@ -107,8 +116,9 @@ export default {
 
                 if (res.data === 'sucesso') {
                     this.isVisible = false;
-                    setTimeout(function () {
-                        location.reload();
+                    setTimeout(() => {
+                        this.loading = false;
+                        this.$router.push("/atividades"); // Redirecionar para a rota raiz
                     }, 3000);
 
                 } else {
@@ -116,6 +126,7 @@ export default {
                 }
             });
         }
+
     }
 }
 </script>
@@ -149,5 +160,45 @@ export default {
     height: 100%;
     box-sizing: border-box;
     animation: slide-in 0.5s forwards;
+}
+
+/* Container do spinner */
+.spinner-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+/* Base do spinner */
+.base_spinner {
+    position: relative;
+    width: 100px;
+    height: 100px;
+}
+
+/* Imagem do spinner */
+.spinner-image {
+    width: 100%;
+    height: auto;
+    animation: spin 2s linear infinite;
+    /* Gira continuamente */
+}
+
+/* Animação de rotação */
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 </style>

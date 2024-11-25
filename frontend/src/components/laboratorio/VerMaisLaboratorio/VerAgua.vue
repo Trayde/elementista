@@ -3,7 +3,7 @@
         <div class="col-md-10 grid-margin">
             <div class="row">
                 <div class="col-12 col-xl-8 mb-4 mb-xl-0">
-                    <h3 class="font-weight-bold">Atividades</h3>
+                    <h3 class="font-weight-bold white">Água</h3>
                 </div>
             </div>
         </div>
@@ -50,12 +50,13 @@
 
 <script>
 import ApiMethodsAtividades from '../../../views/conteudo/service/service.atividades'
+import dados from '../../../localStore/turoriais'
 import { QuillEditor } from '@vueup/vue-quill';
 import '@vueup/vue-quill/dist/vue-quill.snow.css';
 import DOMPurify from 'dompurify';
 
 export default {
-    name: "VerConteudo",
+    name: "VerAgua",
     components: {
         QuillEditor
     },
@@ -76,15 +77,23 @@ export default {
         },
         async show() {
             const id = JSON.parse(this.$route.query.atividades);
-            const response = await ApiMethodsAtividades.obertAtividadeId(id)
-            response.map((dados) => {
+            //const response = await ApiMethodsAtividades.obertAtividadeId(id)
+
+            console.log("dados", dados);
+            
+
+          const arrays = dados.filter((a) => a.id_atividade === id)
+
+
+          arrays.map((dados) => {
                 this.content = {
                     id_atividade: dados.id_atividade,
                     id_ordem: dados.id_ordem,
                     usuario: dados.usuario,
                     titulo: dados.titulo,
                     texto: dados.texto, // Este campo armazenará o HTML gerado pelo Quill
-                    link: `https://apienerge.apololab.net/atividades/${dados.imageName}`,
+                    //link: `https://apienerge.apololab.net/atividades/${dados.imageName}`,
+                    link: dados.imageName,
                     imageName: dados.imageName, // Adiciona o nome da imagem
                     tag: dados.tag
                 }
@@ -93,16 +102,19 @@ export default {
         },
        
        async listaCards() {
-            const response = await ApiMethodsAtividades.obertAtividade()
+          //  const response = await ApiMethodsAtividades.obertAtividade()
+          const response = dados.filter((a) => a.tag === 'óleo na água' || a.tag === 'chuva' || a.tag === 'líquido')
+            
 
-            response.map((dados) => {
+          response.map((dados) => {
                 this.items.push({
                     id_atividade: dados.id_atividade,
                     id_ordem: dados.id_ordem,
                     usuario: dados.usuario,
                     titulo: dados.titulo,
                     texto: dados.texto, // Este campo armazenará o HTML gerado pelo Quill
-                    link: `https://apienerge.apololab.net/atividades/${dados.imageName}`,
+                    //link: `https://apienerge.apololab.net/atividades/${dados.imageName}`,
+                    link: dados.imageName,
                     imageName: dados.imageName, // Adiciona o nome da imagem
                     tag: dados.tag
                 })

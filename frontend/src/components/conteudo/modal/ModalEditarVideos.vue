@@ -3,8 +3,13 @@
         <div class="col-md-10 grid-margin">
             <div class="row">
                 <div class="col-12 col-xl-8 mb-4 mb-xl-0">
-                    <h3 class="font-weight-bold">Criar Atividades</h3>
+                    <h3 class="font-weight-bold white">Editar Atividades</h3>
                 </div>
+            </div>
+        </div>
+        <div v-if="loading" class="spinner-container">
+            <div class="base_spinner">
+                <img src="../../../../public/img/Terralinav2.png" alt="Spinner" class="spinner-image">
             </div>
         </div>
     </div>
@@ -27,20 +32,19 @@
             <div class="card-body">
                 <div class="">
                     <h4 class="modal-title fs-8" id="exampleModalLabel">
-                        <label class="modal-body">Título</label>
-                        <input type="text" class="col-12 col-xl-12 mb-xl-0 form-control" v-model="content.titulo">
-                        <br>
-                        <input type="text" class="col-4 col-xl-4 mb-xl-0 form-control" placeholder="TAG#"
+                        <label class="modal-body spacamento-top">Título</label>
+                        <input type="text" class="col-12 col-xl-12 mb-xl-0 form-control spacamento-top" v-model="content.titulo">
+                
+                        <input type="text" class="col-4 col-xl-4 mb-xl-0 form-control spacamento-top" placeholder="TAG#"
                             v-model="content.tag">
                     </h4>
-                </div>
-                <br>
-              
-                    <label for="activAdmin" class="form-control">Descrição Texto</label>
-                    <div ref="editorContainer"></div> <!-- Removido o espaço extra -->
+                </div>              
+                    <label for="activAdmin" class="form-control spacamento-top">Descrição Texto</label>
+                    <br>
+                    <div  ref="editorContainer"></div> <!-- Removido o espaço extra -->
                
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Salvar</button>
+                    <button type="submit" class="btn btn-primary spacamento-top">Salvar</button>
                 </div>
             </div>
         </form>
@@ -57,6 +61,7 @@ export default {
     data() {
         return {
             isVisible: false,
+            loading: false,
             content: {
                 id_atividade: null,
                 id_ordem: 0,
@@ -129,19 +134,23 @@ export default {
         },
 
         salvar() {
+            this.loading = true; // Exibe o spinner
             // Atualiza o conteúdo com o HTML gerado pelo Quill
             this.content.texto = this.quill.root.innerHTML;
-            
+         
             const dados = this.content;
             ApiMethodsAtividades.editarVideos(dados).then((res) => {
                 if (res.data === 'sucesso') {
                     this.isVisible = false;
-                    setTimeout(function () {
-                        location.reload();
+                    setTimeout(() => {
+                        this.loading = false;
+                        this.$router.push("/videos"); // Redirecionar para a rota raiz
                     }, 3000);
+                    
                 } else {
-                    // Tratar o erro
+                    this.loading = false; // Oculta o spinner em caso de erro
                 }
+                
             });
         }
     }
@@ -199,5 +208,44 @@ export default {
     height: 100%;
     border-radius: 10px;
     /* Aplica o border-radius ao iframe */
+}
+/* Container do spinner */
+.spinner-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+/* Base do spinner */
+.base_spinner {
+    position: relative;
+    width: 100px;
+    height: 100px;
+}
+
+/* Imagem do spinner */
+.spinner-image {
+    width: 100%;
+    height: auto;
+    animation: spin 2s linear infinite;
+    /* Gira continuamente */
+}
+
+/* Animação de rotação */
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 </style>

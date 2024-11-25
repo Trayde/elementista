@@ -3,8 +3,8 @@
     <div class="col-md-12 grid-margin">
       <div class="row">
         <div class="col-12 col-xl-8 mb-4 mb-xl-0">
-          <h3 class="font-weight-bold">Bem vindo ao Elementista</h3>
-          <h6 class="font-weight-normal mb-0">Nossa missão é insprar <span class="text-primary">apróxima geração</span>
+          <h3 class="font-weight-bold white">Bem vindo ao Elementista</h3>
+          <h6 class="font-weight-normal mb-0 white">Nossa missão é insprar <span class="orange">a próxima geração</span>
           </h6>
         </div>
       </div>

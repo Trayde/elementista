@@ -3,7 +3,7 @@
         <div class="col-md-10 grid-margin">
             <div class="row">
                 <div class="col-12 col-xl-8 mb-4 mb-xl-0">
-                    <h3 class="font-weight-bold white">Criar Água</h3>
+                    <h3 class="font-weight-bold white">Editar Atividades</h3>
                 </div>
             </div>
         </div>
@@ -13,40 +13,38 @@
             </div>
         </div>
     </div>
-    <div class="card" style="max-width: 70rem;">
+    <div class="card" >
         <form @submit.prevent="salvar">
             <div v-if="content.link" class="modal-body">
-                <img class="card-img-top" :src="content.link" style="height: 400px;" alt="Card image cap">
+                <img class="card-img-top" :src="content.link"  alt="Card image cap">
             </div>
             <div v-else class="modal-body">
-                <img class="card-img-top" src="../../../../public/img/LOGO_ELEMENTISTA_V1_FUNDO-VERDE.jpg" style="height: 400px"
+                <img class="card-img-top" src="../../../assets/imagemPadao.png" style="height: 400px"
                     alt="Card image cap">
             </div>
             <div class="modal-body">
-                <label for="imageUpload" class="form-label">Upload de Imagem&nbsp;</label>
+                <label for="imageUpload" class="form-label">Upload de Imagem &nbsp;</label>
                 <input type="file" @change="onFileChange">
             </div>
             <div class="card-body">
                 <div class="">
-                    <h4 class="modal-title fs-8" id="exampleModalLabel">
-                        <label class="form-label">Titulo</label>
-                        <input type="text" class="col-12 col-xl-12 mb-xl-0 form-control" v-model="content.titulo">
-                        <br>
+                    
+                        <label class="form-label">Título</label>
+                        <input type="text" class="col-12 col-xl-12 mb-xl-0 form-control spacamento-top" v-model="content.titulo">
+                        <label class="form-label spacamento-top">TAG</label>
                         <input type="text" class="col-4 col-xl-4 mb-xl-0 form-control" placeholder="TAG#"
                             v-model="content.tag">
-                            <br>
-                            <label class="form-label">Nome arquivo .ino</label>    
-                            <input type="text" class="col-4 col-xl-4 mb-xl-0 form-control" placeholder="nome do arquivo .ino"
-                            v-model="content.arquivo">     
-                    </h4>
+                  
+                    <label class="form-label spacamento-top">Nome arquivo .ino</label>
+                        <input type="text" class="col-4 col-xl-4 mb-xl-0 form-control" placeholder="TAG#"
+                            v-model="content.arquivo">
                 </div>
-                <div >
-                    <br>
-                    <label for="activAdmin" class="form-label">Descrição Texto</label>
-                    <div ref="editorContainer"></div>
+                <div class="">
+                    <label for="activAdmin" class="form-label spacamento-top">Descrição Texto</label>
+                    <div ref="editorContainer"></div> <!-- Removido o espaço extra -->
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Salvar</button>
+                    <button type="submit" class="btn btn-primary spacamento-top">Salvar</button>
                 </div>
             </div>
         </form>
@@ -81,7 +79,9 @@ export default {
             avatar: avatar
         };
     },
-
+    created() {
+        this.show()
+    },
     mounted() {
         this.quill = new Quill(this.$refs.editorContainer, {
             theme: 'snow',
@@ -103,6 +103,31 @@ export default {
     },
 
     methods: {
+        sanitizeHtml(html) {
+            return DOMPurify.sanitize(html);
+        },
+        async show() {
+            const id = JSON.parse(this.$route.query.atividades);
+            const response = await ApiMethodsAtividades.obterTutoriais(id)
+            response.map((dados) => {
+                this.content = {
+                    id_atividade: dados.id_atividade,
+                    id_ordem: dados.id_ordem,
+                    usuario: dados.usuario,
+                    titulo: dados.titulo,
+                    texto: dados.texto, // Este campo armazenará o HTML gerado pelo Quill
+                    arquivo: dados.arquivo,
+                    link: `https://apienerge.apololab.net/atividades/${dados.imageName}`,
+                    imageName: dados.imageName, // Adiciona o nome da imagem
+                    tag: dados.tag
+                }
+            })
+
+            if (this.content.texto) {
+            this.quill.root.innerHTML = this.content.texto;
+            }
+        },
+       
         onFileChange(event) {
             const file = event.target.files[0];
             this.content.selectedFile = file;
@@ -111,22 +136,18 @@ export default {
         },
 
         salvar() {
-            this.loading = true;
+            this.loading = true
             // Atualiza o conteúdo com o HTML gerado pelo Quill
             this.content.texto = this.quill.root.innerHTML;
             
-            console.log("salve", this.content);
             const dados = this.content;
-            ApiMethodsAtividades.gravaAgua(dados).then((res) => {
-                console.log("res tela", res);
-
+            ApiMethodsAtividades.editarTutoriais(dados).then((res) => {
                 if (res.data === 'sucesso') {
                     this.isVisible = false;
                     setTimeout(() => {
                         this.loading = false;
-                        this.$router.push("/agua"); // Redirecionar para a rota raiz
+                        this.$router.push("/tutoriais"); // Redirecionar para a rota raiz
                     }, 3000);
-
                 } else {
                     // Tratar o erro
                 }
@@ -136,7 +157,47 @@ export default {
 }
 </script>
 
+
 <style scoped>
+/* Container do spinner */
+.spinner-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+/* Base do spinner */
+.base_spinner {
+    position: relative;
+    width: 100px;
+    height: 100px;
+}
+
+/* Imagem do spinner */
+.spinner-image {
+    width: 100%;
+    height: auto;
+    animation: spin 2s linear infinite; /* Gira continuamente */
+}
+
+/* Animação de rotação */
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+
 .modal {
     display: block;
     position: fixed;
@@ -165,45 +226,5 @@ export default {
     height: 100%;
     box-sizing: border-box;
     animation: slide-in 0.5s forwards;
-}
-
-/* Container do spinner */
-.spinner-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
-}
-
-/* Base do spinner */
-.base_spinner {
-    position: relative;
-    width: 100px;
-    height: 100px;
-}
-
-/* Imagem do spinner */
-.spinner-image {
-    width: 100%;
-    height: auto;
-    animation: spin 2s linear infinite;
-    /* Gira continuamente */
-}
-
-/* Animação de rotação */
-@keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
-
-    100% {
-        transform: rotate(360deg);
-    }
 }
 </style>

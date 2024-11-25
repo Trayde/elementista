@@ -3,48 +3,54 @@
         <div class="col-md-10 grid-margin">
             <div class="row">
                 <div class="col-12 col-xl-8 mb-4 mb-xl-0">
-                    <h3 class="font-weight-bold">Criar Atividades</h3>
+                    <h3 class="font-weight-bold white">Editar Atividades</h3>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="card" style="max-width: 50rem;">
-        <form @submit.prevent="salvar">
-            <div v-if="content.link" class="modal-body">
-                <img class="card-img-top" :src="content.link" style="height: 400px;" alt="Card image cap">
+        <!-- Spinner que aparece quando loading é true -->
+        <div v-if="loading" class="spinner-container">
+            <div class="base_spinner">
+                <img src="../../../../public/img/Arteusv2.png" alt="Spinner" class="spinner-image">
             </div>
-            <div v-else class="modal-body">
-                <img class="card-img-top" src="../../../assets/imagemPadao.png" style="height: 400px"
-                    alt="Card image cap">
-            </div>
-            <div class="modal-body">
-                <label for="imageUpload" class="form-label">Upload de Imagem</label>
-                <input type="file" @change="onFileChange">
-            </div>
-            <div class="card-body">
-                <div class="">
-                    <h4 class="modal-title fs-8" id="exampleModalLabel">
-                        <label class="form-label">Título</label>
-                        <input type="text" class="col-12 col-xl-12 mb-xl-0 form-control" v-model="content.titulo">
-                        <br>
-                        <input type="text" class="col-4 col-xl-4 mb-xl-0 form-control" placeholder="TAG#"
-                            v-model="content.tag">
-                    </h4>
+        </div>
+        <!-- Conteúdo principal -->
+        <div class="card">
+            <form @submit.prevent="salvar">
+                <div v-if="content.link" class="modal-body">
+                    <img class="card-img-top" :src="content.link" alt="Card image cap">
+                </div>
+                <div v-else class="modal-body">
+                    <img class="card-img-top" src="../../../assets/imagemPadao.png" style="height: 400px"
+                        alt="Card image cap">
                 </div>
                 <div class="modal-body">
-                    <label for="activAdmin" class="form-label">Descrição Texto</label>
-                    <div ref="editorContainer"></div> <!-- Removido o espaço extra -->
+                    <label for="imageUpload" class="form-label">Upload de Imagem &nbsp;</label>
+                    <input type="file" @change="onFileChange">
                 </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Salvar</button>
+                <div class="card-body">
+                    <div class="">
+                        <h4 class="modal-title fs-8" id="exampleModalLabel">
+                            <label class="form-label">Título</label>
+                            <input type="text" class="col-12 col-xl-12 mb-xl-0 form-control spacamento-top"
+                                v-model="content.titulo">
+                            <input type="text" class="col-4 col-xl-4 mb-xl-0 form-control spacamento-top"
+                                placeholder="TAG#" v-model="content.tag">
+                        </h4>
+                    </div>
+                    <div class="">
+                        <label for="activAdmin" class="form-label spacamento-top">Descrição Texto</label>
+                        <div ref="editorContainer"></div> <!-- Editor Quill -->
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary spacamento-top">Salvar</button>
+                    </div>
                 </div>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
 </template>
-
 <script>
-import ApiMethodsAtividades from '@/views/conteudo/service/service.atividades'
+import ApiMethodsAtividades from '@/views/conteudo/service/service.atividades';
 import Quill from 'quill';
 import 'quill/dist/quill.snow.css';
 
@@ -52,23 +58,24 @@ export default {
     name: "CriaAtividade",
     data() {
         return {
+            loading: false, // Controla o spinner
             isVisible: false,
             content: {
                 id_atividade: null,
                 id_ordem: 0,
                 usuario: "",
                 titulo: "",
-                texto: "", // Este campo armazenará o HTML gerado pelo Quill
+                texto: "",
                 link: "",
                 selectedFile: null,
-                imageName: "", // Adiciona o nome da imagem
+                imageName: "",
                 tag: ""
             },
             quill: null
         };
     },
     created() {
-        this.show()
+        this.show();
     },
     mounted() {
         this.quill = new Quill(this.$refs.editorContainer, {
@@ -84,93 +91,96 @@ export default {
             }
         });
 
-        // Carregar o conteúdo existente, se houver
         if (this.content.texto) {
             this.quill.root.innerHTML = this.content.texto;
         }
     },
-
     methods: {
-        sanitizeHtml(html) {
-            return DOMPurify.sanitize(html);
-        },
         async show() {
             const id = JSON.parse(this.$route.query.atividades);
-            const response = await ApiMethodsAtividades.obertAtividadeId(id)
+            const response = await ApiMethodsAtividades.obertAtividadeId(id);
             response.map((dados) => {
                 this.content = {
                     id_atividade: dados.id_atividade,
                     id_ordem: dados.id_ordem,
                     usuario: dados.usuario,
                     titulo: dados.titulo,
-                    texto: dados.texto, // Este campo armazenará o HTML gerado pelo Quill
+                    texto: dados.texto,
                     link: `https://apienerge.apololab.net/atividades/${dados.imageName}`,
-                    imageName: dados.imageName, // Adiciona o nome da imagem
+                    imageName: dados.imageName,
                     tag: dados.tag
-                }
-            })
+                };
+            });
 
             if (this.content.texto) {
-            this.quill.root.innerHTML = this.content.texto;
+                this.quill.root.innerHTML = this.content.texto;
             }
         },
-       
         onFileChange(event) {
             const file = event.target.files[0];
             this.content.selectedFile = file;
-            this.content.link = URL.createObjectURL(file); // Atualiza a visualização da imagem
-            this.content.imageName = file.name; // Armazena o nome do arquivo
+            this.content.link = URL.createObjectURL(file);
+            this.content.imageName = file.name;
         },
-
         salvar() {
-            // Atualiza o conteúdo com o HTML gerado pelo Quill
+            this.loading = true; // Exibe o spinner
             this.content.texto = this.quill.root.innerHTML;
+
+           
             
             const dados = this.content;
             ApiMethodsAtividades.editarAtividade(dados).then((res) => {
                 if (res.data === 'sucesso') {
+                    
                     this.isVisible = false;
-                    setTimeout(function () {
-                        location.reload();
+                     setTimeout(() => {
+                        this.loading = false;
+                        this.$router.push("/atividades"); // Redirecionar para a rota raiz
                     }, 3000);
                 } else {
-                    // Tratar o erro
+                    this.loading = false; // Oculta o spinner em caso de erro
                 }
             });
         }
     }
-}
+};
 </script>
-
-
 <style scoped>
-.modal {
-    display: block;
+/* Container do spinner */
+.spinner-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     position: fixed;
-    z-index: 1;
-    left: 0;
     top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.4);
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
 }
 
-.close {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 20px;
-    cursor: pointer;
+/* Base do spinner */
+.base_spinner {
+    position: relative;
+    width: 100px;
+    height: 100px;
 }
 
-.modal-content {
-    background-color: #fdf8f8;
-    padding: 20px;
-    border: none;
+/* Imagem do spinner */
+.spinner-image {
     width: 100%;
-    height: 100%;
-    box-sizing: border-box;
-    animation: slide-in 0.5s forwards;
+    height: auto;
+    animation: spin 2s linear infinite; /* Gira continuamente */
+}
+
+/* Animação de rotação */
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 </style>

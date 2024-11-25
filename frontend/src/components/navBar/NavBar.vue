@@ -1,8 +1,8 @@
 <template>
 <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
       <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
-        <!-- <a class="navbar-brand brand-logo mr-5" href="index.html"><img src="images/logo.svg" class="mr-2" alt="logo"/></a>
-        <a class="navbar-brand brand-logo-mini" href="index.html"><img src="images/logo-mini.svg" alt="logo"/></a> -->
+        <a ><router-link class="navbar-brand brand-logo mr-5" to="/"><img src="img/elementista.png" class="mr-2" alt="logo"/></router-link></a>
+        <a ><router-link class="navbar-brand brand-logo-mini" to="/"><img src="img/elementista_mini.png" alt="logo"/></router-link></a>
       </div>
       <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
         <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">

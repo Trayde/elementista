@@ -55,7 +55,7 @@ module.exports = class UsuariosController {
 
     async editarAtividade(req, res) {
 
-        console.log("editarAtividade", req.body);
+        console.log("editarAtividade", req.body.imageName);
 
         try {
 
@@ -67,9 +67,14 @@ module.exports = class UsuariosController {
                     titulo: req.body.titulo,
                     texto: req.body.texto,
                     link: req.body.link,
-                    imageName: req.file.body.link,filename,
+                    imageName: req.file.filename,
                     tag: req.body.tag
                 }
+
+
+                console.log("dados preparados para controller =====>", dados);
+
+
                 const response = await this.atividadeServices.editarAtividade(dados);
                 if (response) {
                     return res.status(200).send("sucesso");
@@ -100,6 +105,36 @@ module.exports = class UsuariosController {
 
 
         } catch (error) {
+
+
+            console.log("erro editar atividades metodo controller ===>", error);
+
+
+            return res.status(500).send(error);
+        }
+    }
+
+    async deleteAtividade(req, res) {
+
+        const {
+            id
+        } = req.params
+
+        try {
+
+            console.log("dados preparados para controller delete =====>", id);
+
+
+            const response = await this.atividadeServices.deleteAtividade(id);
+            return res.status(200).send(response);
+
+
+        } catch (error) {
+
+
+            console.log("dados preparados para controller delete ===>", error);
+
+
             return res.status(500).send(error);
         }
     }
@@ -137,9 +172,36 @@ module.exports = class UsuariosController {
             return res.status(500).send(error);
         }
     }
- 
-    async obertVideosId(req, res){
-        const {  id  } = req.params
+
+    async deleteVideos(req, res) {
+
+        const {
+            id
+        } = req.params
+
+        try {
+
+            console.log("dados preparados para controller delete deleteVideos =====>", id);
+
+
+            const response = await this.atividadeServices.deleteVideos(id);
+            return res.status(200).send(response);
+
+
+        } catch (error) {
+
+
+            console.log("dados preparados para controller delete deleteVideos ===>", error);
+
+
+            return res.status(500).send(error);
+        }
+    }
+
+    async obertVideosId(req, res) {
+        const {
+            id
+        } = req.params
         try {
             const response = await this.atividadeServices.obertVideosId(id);
             console.log("ret", response);
@@ -192,6 +254,754 @@ module.exports = class UsuariosController {
             return res.status(500).send(error);
         }
     }
+
+    async gravaTutoriais(req, res) {
+
+        console.log("controler", req.body);
+
+
+        try {
+            const dados = {
+                id_ordem: req.body.id_ordem,
+                usuario: req.body.usuario,
+                titulo: req.body.titulo,
+                texto: req.body.texto,
+                arquivo: req.body.arquivo,
+                link: req.body.link,
+                imageName: req.file.filename,
+                tag: req.body.tag
+            }
+
+            console.log("dados", dados);
+
+
+            const response = await this.atividadeServices.gravaTutoriais(dados);
+            if (response) {
+                return res.status(200).send("sucesso");
+            } else {
+                return res.status(200).send("falha");
+            }
+        } catch (error) {
+            return res.status(500).send(error);
+        }
+    }
+
+    async editarTutoriais(req, res) {
+
+        console.log("editarAgua", req.body.imageName);
+
+        try {
+
+            if (req.file) {
+                const dados = {
+                    id_atividade: req.body.id_atividade,
+                    id_ordem: req.body.id_ordem,
+                    usuario: req.body.usuario,
+                    titulo: req.body.titulo,
+                    texto: req.body.texto,
+                    arquivo: req.body.arquivo,
+                    link: req.body.link,
+                    imageName: req.file.filename,
+                    tag: req.body.tag
+                }
+
+
+                console.log("dados preparados para controller =====>", dados);
+
+
+                const response = await this.atividadeServices.editarTutoriais(dados);
+                if (response) {
+                    return res.status(200).send("sucesso");
+                } else {
+                    return res.status(200).send("falha");
+                }
+            } else {
+                const dados = {
+                    id_atividade: req.body.id_atividade,
+                    id_ordem: req.body.id_ordem,
+                    usuario: req.body.usuario,
+                    titulo: req.body.titulo,
+                    texto: req.body.texto,
+                    link: req.body.link,
+                    imageName: req.body.imageName,
+                    tag: req.body.tag
+                }
+                console.log("dados", dados);
+                const response = await this.atividadeServices.editarTutoriais(dados);
+                if (response) {
+                    return res.status(200).send("sucesso");
+                } else {
+                    return res.status(200).send("falha");
+                }
+
+
+            }
+
+
+        } catch (error) {
+
+
+            console.log("erro editar atividades metodo controller ===>", error);
+
+
+            return res.status(500).send(error);
+        }
+    }
+
+    async deleteTutoriais(req, res) {
+
+        const {
+            id
+        } = req.params
+
+        try {
+
+            console.log("dados preparados para controller delete =====>", id);
+
+
+            const response = await this.atividadeServices.deleteTutoriais(id);
+            return res.status(200).send(response);
+
+
+        } catch (error) {
+
+
+            console.log("dados preparados para controller delete ===>", error);
+
+
+            return res.status(500).send(error);
+        }
+    }
+
+    async obterTutoriais(req, res) {
+        try {
+            const response = await this.atividadeServices.obterTutoriais();
+            console.log("ret", response);
+            return res.status(200).send(response);
+        } catch (error) {
+            return res.status(500).send(error);
+        }
+    }
+
+    async obterTutoriaisId(req, res) {
+        console.log("back end ====> obterTutoriaisId ", req.params);
+
+        const {
+            id
+        } = req.params
+        console.log("obterTutoriaisId controler =====>", id);
+
+        try {
+            const response = await this.atividadeServices.obterTutoriaisId(id);
+            console.log("ret", response);
+            return res.status(200).send(response);
+        } catch (error) {
+            return res.status(500).send(error);
+        }
+    }
+
+    async gravaAgua(req, res) {
+
+        console.log("controler Agua", req.body);
+
+
+        try {
+            const dados = {
+                id_ordem: req.body.id_ordem,
+                usuario: req.body.usuario,
+                titulo: req.body.titulo,
+                texto: req.body.texto,
+                arquivo: req.body.arquivo,
+                link: req.body.link,
+                imageName: req.file.filename,
+                tag: req.body.tag
+            }
+
+            console.log("dados Agua", dados);
+
+
+            const response = await this.atividadeServices.gravaAgua(dados);
+            if (response) {
+                return res.status(200).send("sucesso");
+            } else {
+                return res.status(200).send("falha");
+            }
+        } catch (error) {
+
+            console.log("error", error);
+            
+
+            return res.status(500).send(error);
+        }
+    }
+
+    async editarAgua(req, res) {
+
+        console.log("editarAgua", req.body.imageName);
+
+        try {
+
+            if (req.file) {
+                const dados = {
+                    id_atividade: req.body.id_atividade,
+                    id_ordem: req.body.id_ordem,
+                    usuario: req.body.usuario,
+                    titulo: req.body.titulo,
+                    texto: req.body.texto,
+                    arquivo: req.body.arquivo,
+                    link: req.body.link,
+                    imageName: req.file.filename,
+                    tag: req.body.tag
+                }
+
+
+                console.log("dados preparados para controller =====>", dados);
+
+
+                const response = await this.atividadeServices.editarAgua(dados);
+                if (response) {
+                    return res.status(200).send("sucesso");
+                } else {
+                    return res.status(200).send("falha");
+                }
+            } else {
+                const dados = {
+                    id_atividade: req.body.id_atividade,
+                    id_ordem: req.body.id_ordem,
+                    usuario: req.body.usuario,
+                    titulo: req.body.titulo,
+                    texto: req.body.texto,
+                    arquivo: req.body.arquivo,
+                    link: req.body.link,
+                    imageName: req.body.imageName,
+                    tag: req.body.tag
+                }
+                console.log("dados", dados);
+                const response = await this.atividadeServices.editarAgua(dados);
+                if (response) {
+                    return res.status(200).send("sucesso");
+                } else {
+                    return res.status(200).send("falha");
+                }
+
+
+            }
+
+
+        } catch (error) {
+
+
+            console.log("erro editar atividades metodo controller ===>", error);
+
+
+            return res.status(500).send(error);
+        }
+    }
+
+    async deleteAgua(req, res) {
+
+        const {
+            id
+        } = req.params
+
+        try {
+
+            console.log("dados preparados para controller delete =====>", id);
+
+
+            const response = await this.atividadeServices.deleteAgua(id);
+            return res.status(200).send(response);
+
+
+        } catch (error) {
+
+
+            console.log("dados preparados para controller delete ===>", error);
+
+
+            return res.status(500).send(error);
+        }
+    }
+
+    async obterAgua(req, res) {
+        try {
+            const response = await this.atividadeServices.obterAgua();
+            console.log("ret", response);
+            return res.status(200).send(response);
+        } catch (error) {
+            return res.status(500).send(error);
+        }
+    }
+
+    async obterAguaId(req, res) {
+        console.log("back end ====> obterTutoriaisId ", req.params);
+
+        const {
+            id
+        } = req.params
+        console.log("obterTutoriaisId controler =====>", id);
+
+        try {
+            const response = await this.atividadeServices.obterAguaId(id);
+            console.log("ret", response);
+            return res.status(200).send(response);
+        } catch (error) {
+            return res.status(500).send(error);
+        }
+    }
+
+    async gravaAr(req, res) {
+
+        console.log("controler Ar", req.body);
+
+
+        try {
+            const dados = {
+                id_ordem: req.body.id_ordem,
+                usuario: req.body.usuario,
+                titulo: req.body.titulo,
+                texto: req.body.texto,
+                arquivo: req.body.arquivo,
+                link: req.body.link,
+                imageName: req.file.filename,
+                tag: req.body.tag
+            }
+
+            console.log("dados Ar", dados);
+
+
+            const response = await this.atividadeServices.gravaAr(dados);
+            if (response) {
+                return res.status(200).send("sucesso");
+            } else {
+                return res.status(200).send("falha");
+            }
+        } catch (error) {
+            return res.status(500).send(error);
+        }
+    }
+
+    async editarAr(req, res) {
+
+        console.log("editarAr", req.body.imageName);
+
+        try {
+
+            if (req.file) {
+                const dados = {
+                    id_atividade: req.body.id_atividade,
+                    id_ordem: req.body.id_ordem,
+                    usuario: req.body.usuario,
+                    titulo: req.body.titulo,
+                    texto: req.body.texto,
+                    arquivo: req.body.arquivo,
+                    link: req.body.link,
+                    imageName: req.file.filename,
+                    tag: req.body.tag
+                }
+
+
+                console.log("dados preparados para controller =====>", dados);
+
+
+                const response = await this.atividadeServices.editarAr(dados);
+                if (response) {
+                    return res.status(200).send("sucesso");
+                } else {
+                    return res.status(200).send("falha");
+                }
+            } else {
+                const dados = {
+                    id_atividade: req.body.id_atividade,
+                    id_ordem: req.body.id_ordem,
+                    usuario: req.body.usuario,
+                    titulo: req.body.titulo,
+                    texto: req.body.texto,
+                    arquivo: req.body.arquivo,
+                    link: req.body.link,
+                    imageName: req.body.imageName,
+                    tag: req.body.tag
+                }
+                console.log("dados", dados);
+                const response = await this.atividadeServices.editarAr(dados);
+                if (response) {
+                    return res.status(200).send("sucesso");
+                } else {
+                    return res.status(200).send("falha");
+                }
+
+
+            }
+
+
+        } catch (error) {
+
+
+            console.log("erro editar atividades metodo controller ===>", error);
+
+
+            return res.status(500).send(error);
+        }
+    }
+
+    async deleteAr(req, res) {
+
+        const {
+            id
+        } = req.params
+
+        try {
+
+            console.log("dados preparados para controller delete =====>", id);
+
+
+            const response = await this.atividadeServices.deleteAr(id);
+            return res.status(200).send(response);
+
+
+        } catch (error) {
+
+
+            console.log("dados preparados para controller delete ===>", error);
+
+
+            return res.status(500).send(error);
+        }
+    }
+
+    async obterAr(req, res) {
+        try {
+            const response = await this.atividadeServices.obterAr();
+            console.log("ret", response);
+            return res.status(200).send(response);
+        } catch (error) {
+            return res.status(500).send(error);
+        }
+    }
+
+    async obterArId(req, res) {
+        console.log("back end ====> obterTutoriaisId ", req.params);
+
+        const {
+            id
+        } = req.params
+        console.log("obterTutoriaisId controler =====>", id);
+
+        try {
+            const response = await this.atividadeServices.obterArId(id);
+            console.log("ret", response);
+            return res.status(200).send(response);
+        } catch (error) {
+            return res.status(500).send(error);
+        }
+    }
+
+    async gravaTerra(req, res) {
+
+        console.log("controler Terra", req.body);
+
+
+        try {
+            const dados = {
+                id_ordem: req.body.id_ordem,
+                usuario: req.body.usuario,
+                titulo: req.body.titulo,
+                texto: req.body.texto,
+                arquivo: req.body.arquivo,
+                link: req.body.link,
+                imageName: req.file.filename,
+                tag: req.body.tag
+            }
+
+            console.log("dados Terra", dados);
+
+
+            const response = await this.atividadeServices.gravaTerra(dados);
+            if (response) {
+                return res.status(200).send("sucesso");
+            } else {
+                return res.status(200).send("falha");
+            }
+        } catch (error) {
+            return res.status(500).send(error);
+        }
+    }
+
+    async editarTerra(req, res) {
+
+        console.log("editarTerra", req.body.imageName);
+
+        try {
+
+            if (req.file) {
+                const dados = {
+                    id_atividade: req.body.id_atividade,
+                    id_ordem: req.body.id_ordem,
+                    usuario: req.body.usuario,
+                    titulo: req.body.titulo,
+                    texto: req.body.texto,
+                    arquivo: req.body.arquivo,
+                    link: req.body.link,
+                    imageName: req.file.filename,
+                    tag: req.body.tag
+                }
+
+
+                console.log("dados preparados para controller =====>", dados);
+
+
+                const response = await this.atividadeServices.editarTerra(dados);
+                if (response) {
+                    return res.status(200).send("sucesso");
+                } else {
+                    return res.status(200).send("falha");
+                }
+            } else {
+                const dados = {
+                    id_atividade: req.body.id_atividade,
+                    id_ordem: req.body.id_ordem,
+                    usuario: req.body.usuario,
+                    titulo: req.body.titulo,
+                    texto: req.body.texto,
+                    arquivo: req.body.arquivo,
+                    link: req.body.link,
+                    imageName: req.body.imageName,
+                    tag: req.body.tag
+                }
+                console.log("dados", dados);
+                const response = await this.atividadeServices.editarTerra(dados);
+                if (response) {
+                    return res.status(200).send("sucesso");
+                } else {
+                    return res.status(200).send("falha");
+                }
+
+
+            }
+
+
+        } catch (error) {
+
+
+            console.log("erro editar atividades metodo controller ===>", error);
+
+
+            return res.status(500).send(error);
+        }
+    }
+
+    async deleteTerra(req, res) {
+
+        const {
+            id
+        } = req.params
+
+        try {
+
+            console.log("dados preparados para controller delete =====>", id);
+
+
+            const response = await this.atividadeServices.deleteTerra(id);
+            return res.status(200).send(response);
+
+
+        } catch (error) {
+
+
+            console.log("dados preparados para controller delete ===>", error);
+
+
+            return res.status(500).send(error);
+        }
+    }
+
+    async obterTerra(req, res) {
+        try {
+            const response = await this.atividadeServices.obterTerra();
+            console.log("ret", response);
+            return res.status(200).send(response);
+        } catch (error) {
+            return res.status(500).send(error);
+        }
+    }
+
+    async obterTerraId(req, res) {
+        console.log("back end ====> obterTutoriaisId ", req.params);
+
+        const {
+            id
+        } = req.params
+        console.log("obterTutoriaisId controler =====>", id);
+
+        try {
+            const response = await this.atividadeServices.obterTerraId(id);
+            console.log("ret", response);
+            return res.status(200).send(response);
+        } catch (error) {
+            return res.status(500).send(error);
+        }
+    }
+
+    async gravaFogo(req, res) {
+
+        console.log("controler Fogo", req.body);
+
+
+        try {
+            const dados = {
+                id_ordem: req.body.id_ordem,
+                usuario: req.body.usuario,
+                titulo: req.body.titulo,
+                texto: req.body.texto,
+                arquivo: req.body.arquivo,
+                link: req.body.link,
+                imageName: req.file.filename,
+                tag: req.body.tag
+            }
+
+            console.log("dados Fogo", dados);
+
+
+            const response = await this.atividadeServices.gravaFogo(dados);
+            if (response) {
+                return res.status(200).send("sucesso");
+            } else {
+                return res.status(200).send("falha");
+            }
+        } catch (error) {
+            return res.status(500).send(error);
+        }
+    }
+
+    async editarFogo(req, res) {
+
+        console.log("editarFogo", req.body.imageName);
+
+        try {
+
+            if (req.file) {
+                const dados = {
+                    id_atividade: req.body.id_atividade,
+                    id_ordem: req.body.id_ordem,
+                    usuario: req.body.usuario,
+                    titulo: req.body.titulo,
+                    texto: req.body.texto,
+                    arquivo: req.body.arquivo,
+                    link: req.body.link,
+                    imageName: req.file.filename,
+                    tag: req.body.tag
+                }
+
+
+                console.log("dados preparados para controller =====>", dados);
+
+
+                const response = await this.atividadeServices.editarFogo(dados);
+                if (response) {
+                    return res.status(200).send("sucesso");
+                } else {
+                    return res.status(200).send("falha");
+                }
+            } else {
+                const dados = {
+                    id_atividade: req.body.id_atividade,
+                    id_ordem: req.body.id_ordem,
+                    usuario: req.body.usuario,
+                    titulo: req.body.titulo,
+                    texto: req.body.texto,
+                    arquivo: req.body.arquivo,
+                    link: req.body.link,
+                    imageName: req.body.imageName,
+                    tag: req.body.tag
+                }
+                console.log("dados", dados);
+                const response = await this.atividadeServices.editarFogo(dados);
+                if (response) {
+                    return res.status(200).send("sucesso");
+                } else {
+                    return res.status(200).send("falha");
+                }
+
+
+            }
+
+
+        } catch (error) {
+
+
+            console.log("erro editar atividades metodo controller ===>", error);
+
+
+            return res.status(500).send(error);
+        }
+    }
+
+    async deleteFogo(req, res) {
+
+        const {
+            id
+        } = req.params
+
+        try {
+
+            console.log("dados preparados para controller delete =====>", id);
+
+
+            const response = await this.atividadeServices.deleteFogo(id);
+            return res.status(200).send(response);
+
+
+        } catch (error) {
+
+
+            console.log("dados preparados para controller delete ===>", error);
+
+
+            return res.status(500).send(error);
+        }
+    }
+
+    async obterFogo(req, res) {
+        try {
+            const response = await this.atividadeServices.obterFogo();
+            console.log("ret", response);
+            return res.status(200).send(response);
+        } catch (error) {
+            return res.status(500).send(error);
+        }
+    }
+
+    async obterFogoId(req, res) {
+        console.log("back end ====> obterTutoriaisId ", req.params);
+
+        const {
+            id
+        } = req.params
+        console.log("obterTutoriaisId controler =====>", id);
+
+        try {
+            const response = await this.atividadeServices.obterFogoId(id);
+            console.log("ret", response);
+            return res.status(200).send(response);
+        } catch (error) {
+            return res.status(500).send(error);
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 }

@@ -3,7 +3,7 @@
         <div class="col-md-10 grid-margin">
             <div class="row">
                 <div class="col-12 col-xl-8 mb-4 mb-xl-0">
-                    <h3 class="font-weight-bold">Terra</h3>
+                    <h3 class="font-weight-bold white">Terra</h3>
                 </div>
             </div>
         </div>
@@ -21,10 +21,10 @@
                 <div class="col-md-12">
                     <div class="card-body">
                         <div class="template-demo">
-                            <button @click="filterByTag('')" :class="['btn btn-inverse-secondary btn-fw', { 'btn-primary': selectedTag === '' }]">
+                            <button @click="filterByTag('')" :class="['btn btn-inverse-orange btn-fw', { 'btn-primary': selectedTag === '' }]">
                                 TODAS
                             </button>
-                            <button v-for="tag in uniqueTags" :key="tag" @click="filterByTag(tag)" :class="['btn btn-inverse-secondary btn-fw', { 'btn-primary': selectedTag === tag }]">
+                            <button v-for="tag in uniqueTags" :key="tag" @click="filterByTag(tag)" :class="['btn btn-inverse-orange btn-fw', { 'btn-primary': selectedTag === tag }]">
                                 {{ tag }}
                             </button>
                         </div>
