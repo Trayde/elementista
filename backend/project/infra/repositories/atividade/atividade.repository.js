@@ -226,6 +226,7 @@ module.exports = class AtividadeRepository {
           arquivo: dados.arquivo,
           link: dados.link,
           imageName: dados.imageName,
+          documento: dados.documento,
           dt_criacao: new Date(),
           publicada: true,
           tag: dados.tag
@@ -254,18 +255,7 @@ module.exports = class AtividadeRepository {
           id_atividade: Number(dados.id_atividade)
         },
   
-        data: {
-          id_ordem: Number(dados.id_ordem),
-          usuario: dados.usuario,
-          titulo: dados.titulo,
-          texto: dados.texto,
-          arquivo: dados.arquivo,
-          link: dados.link,
-          imageName: dados.imageName,
-          dt_criacao: new Date(),
-          publicada: true,
-          tag: dados.tag
-        }
+        data: dados
   
       })
 
@@ -300,7 +290,7 @@ module.exports = class AtividadeRepository {
   async obterTutoriais() {
     try {
       const retorno = await this.prisma.tutoriais.findMany()
-      console.log("retorno tutoriais repositorio ====>", retorno);
+   //   console.log("retorno tutoriais repositorio ====>", retorno);
       
       return retorno
     } catch (error) {

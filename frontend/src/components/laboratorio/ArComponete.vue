@@ -22,7 +22,7 @@
                     <div class="card-body">
                         <div class="template-demo">
                             <button @click="filterByTag('')" :class="['btn btn-inverse-orange btn-fw', { 'btn-primary': selectedTag === '' }]">
-                                TODAS
+                                Todas
                             </button>
                             <button v-for="tag in uniqueTags" :key="tag" @click="filterByTag(tag)" :class="['btn btn-inverse-orange btn-fw', { 'btn-primary': selectedTag === tag }]">
                                 {{ tag }}

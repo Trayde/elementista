@@ -3,27 +3,31 @@
         <div class="col-md-10 grid-margin">
             <div class="row">
                 <div class="col-12 col-xl-8 mb-4 mb-xl-0">
-                    <h3 class="font-weight-bold">Criar Atividades</h3>
+                    <h3 class="font-weight-bold">Editar videos</h3>
                 </div>
             </div>
+        </div>
+        <!-- Spinner que aparece quando loading é true -->
+        <div v-if="loading" class="spinner-container">
+            <div class="base_spinner"> </div>
         </div>
     </div>
     <div class="card" style="max-width: 70rem;">
         <form @submit.prevent="salvar">
             <div class="">
-                        <h4 class="modal-body fs-8" id="exampleModalLabel">
-                            <label class="form-label">Link</label>
-                            <input type="text" class="col-12 col-xl-12 mb-xl-0 form-control" v-model="content.link">
-                        </h4>
-                    </div>
-                    <div class="modal-body">
-                        <div class="video-container">
-                            <iframe :src="content.link" title="YouTube video player" frameborder="0"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                referrerpolicy="strict-origin-when-cross-origin" allowfullscreen>
-                            </iframe>
-                        </div>
-                    </div>
+                <h4 class="modal-body fs-8" id="exampleModalLabel">
+                    <label class="form-label">Link</label>
+                    <input type="text" class="col-12 col-xl-12 mb-xl-0 form-control" v-model="content.link">
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div class="video-container">
+                    <iframe :src="content.link" title="YouTube video player" frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        referrerpolicy="strict-origin-when-cross-origin" allowfullscreen>
+                    </iframe>
+                </div>
+            </div>
             <div class="card-body">
                 <div class="">
                     <h4 class="modal-title fs-8" id="exampleModalLabel">
@@ -35,10 +39,10 @@
                     </h4>
                 </div>
                 <br>
-              
-                    <label for="activAdmin" class="form-control">Descrição Texto</label>
-                    <div ref="editorContainer"></div> <!-- Removido o espaço extra -->
-               
+
+                <label for="activAdmin" class="form-control">Descrição Texto</label>
+                <div ref="editorContainer"></div> <!-- Removido o espaço extra -->
+
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary">Salvar</button>
                 </div>
@@ -57,6 +61,7 @@ export default {
     data() {
         return {
             isVisible: false,
+            loading: false,
             content: {
                 id_atividade: null,
                 id_ordem: 0,
@@ -101,7 +106,7 @@ export default {
         async show() {
             const id = JSON.parse(this.$route.query.videos);
             console.log("id tela", id);
-            
+
             const response = await ApiMethodsAtividades.obertVideosId(id)
             response.map((dados) => {
                 this.content = {
@@ -117,10 +122,10 @@ export default {
             })
 
             if (this.content.texto) {
-            this.quill.root.innerHTML = this.content.texto;
+                this.quill.root.innerHTML = this.content.texto;
             }
         },
-       
+
         onFileChange(event) {
             const file = event.target.files[0];
             this.content.selectedFile = file;
@@ -131,7 +136,7 @@ export default {
         salvar() {
             // Atualiza o conteúdo com o HTML gerado pelo Quill
             this.content.texto = this.quill.root.innerHTML;
-            
+
             const dados = this.content;
             ApiMethodsAtividades.editarVideos(dados).then((res) => {
                 if (res.data === 'sucesso') {
@@ -199,5 +204,44 @@ export default {
     height: 100%;
     border-radius: 10px;
     /* Aplica o border-radius ao iframe */
+}
+
+/* Container do spinner */
+.spinner-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+/* Base do spinner */
+.base_spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #f3f3f3;
+    /* Cor do fundo do círculo */
+    border-top: 5px solid #3498db;
+    /* Cor da parte superior que vai girar */
+    border-radius: 50%;
+    /* Faz o círculo */
+    animation: spin 1s linear infinite;
+    /* Gira continuamente */
+}
+
+/* Animação de rotação */
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 </style>

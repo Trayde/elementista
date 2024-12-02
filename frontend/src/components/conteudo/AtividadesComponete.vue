@@ -11,15 +11,15 @@
             <div class="dropdown flex-md-grow-1 flex-xl-grow-0">
                 <a @click="criarAtividade(dados)">
                     <!-- <i style="font-size: 25px;" class="mdi mdi-note-plus"></i> -->
-                    <img :src="avatar" style="width: 90px; height: 80px;">
+                    <img :src="avatar" style="width: 130px; height: 120px;">
                 </a>
             </div>
         </div>
+        <!-- Spinner que aparece quando loading é true -->
         <div v-if="loading" class="spinner-container">
-            <div class="base_spinner">
-                <img :src="avatar" alt="Spinner" class="spinner-image">
-            </div>
+            <div class="base_spinner"> </div>
         </div>
+
     </div>
     <div class="col-12 grid-margin stretch-card">
         <div class="card" style="background-color: #fff0;">
@@ -29,7 +29,7 @@
                         <div class="template-demo">
                             <button @click="filterByTag('')"
                                 :class="['btn btn-inverse-orange btn-fw ', { 'btn-primary': selectedTag === '' }]">
-                                TODAS
+                                Todas
                             </button>
                             <button v-for="tag in uniqueTags" :key="tag" @click="filterByTag(tag)"
                                 :class="['btn white btn-inverse-orange btn-fw', { 'btn-primary': selectedTag === tag }]">
@@ -66,7 +66,11 @@
                     <br><br>
                     <p class="font-weight-500 truncated-text" v-html="sanitizeHtml(dados.texto)"></p>
                     <a class="btn btn-primary mt-3" @click="verMais(dados)">Ver mais</a>
+                    <br>
+                    <br>
+                    <span class="orange">{{ dados.tag }}</span>
                 </div>
+
             </div>
         </div>
     </div>
@@ -162,21 +166,28 @@ export default {
                 cancelButtonColor: "#3085d6",
                 confirmButtonText: "Sim, excluir!",
                 cancelButtonText: "Cancelar",
+                willOpen: () => {
+                    // Adiciona um estilo diretamente no ícone
+                    const icon = document.querySelector('.swal2-icon');
+                    if (icon) {
+                        icon.style.marginTop = '20px'; // Ajuste conforme necessário
+                    }
+                }
             });
 
             // Se o usuário confirmar, remove o item
             if (result.isConfirmed) {
                 this.deleteItem(itemId);
-               
+
             }
         },
         deleteItem(itemId) {
-            this.loading = true 
-           ApiMethodsAtividades.deleteAtividade(itemId).then((res) => {
-            console.log("delete", res);
-            
+            this.loading = true
+            ApiMethodsAtividades.deleteAtividade(itemId).then((res) => {
+                console.log("delete", res);
+
                 if (res.mensagen === 'sucesso') {
-                    
+
                     this.isVisible = false;
                     setTimeout(() => {
                         this.loading = false;
@@ -249,16 +260,15 @@ export default {
 
 /* Base do spinner */
 .base_spinner {
-    position: relative;
-    width: 100px;
-    height: 100px;
-}
-
-/* Imagem do spinner */
-.spinner-image {
-    width: 100%;
-    height: auto;
-    animation: spin 2s linear infinite;
+    width: 50px;
+    height: 50px;
+    border: 5px solid #f3f3f3;
+    /* Cor do fundo do círculo */
+    border-top: 5px solid #3498db;
+    /* Cor da parte superior que vai girar */
+    border-radius: 50%;
+    /* Faz o círculo */
+    animation: spin 1s linear infinite;
     /* Gira continuamente */
 }
 

@@ -15,6 +15,8 @@ const {
     log
 } = require('util');
 
+const fs = require('fs');
+const path = require('path');
 module.exports = class UsuariosController {
 
     constructor() {
@@ -256,10 +258,7 @@ module.exports = class UsuariosController {
     }
 
     async gravaTutoriais(req, res) {
-
         console.log("controler", req.body);
-
-
         try {
             const dados = {
                 id_ordem: req.body.id_ordem,
@@ -269,10 +268,11 @@ module.exports = class UsuariosController {
                 arquivo: req.body.arquivo,
                 link: req.body.link,
                 imageName: req.file.filename,
+                documento: req.body.arquivo,
                 tag: req.body.tag
             }
 
-            console.log("dados", dados);
+          //  console.log("dados", dados);
 
 
             const response = await this.atividadeServices.gravaTutoriais(dados);
@@ -288,20 +288,28 @@ module.exports = class UsuariosController {
 
     async editarTutoriais(req, res) {
 
-        console.log("editarAgua", req.body.imageName);
+        console.log("editarTutoriais", req.file);
 
+        let imagem   
+
+        if (req.file) {
+            imagem = req.file.filename
+        } else {
+            imagem = req.body.imageName
+        }
         try {
 
-            if (req.file) {
+            if (req.body.documento) {
                 const dados = {
-                    id_atividade: req.body.id_atividade,
-                    id_ordem: req.body.id_ordem,
+                    id_atividade: Number(req.body.id_atividade),
+                    id_ordem: Number(req.body.id_ordem),
                     usuario: req.body.usuario,
                     titulo: req.body.titulo,
                     texto: req.body.texto,
                     arquivo: req.body.arquivo,
                     link: req.body.link,
-                    imageName: req.file.filename,
+                    imageName: imagem,
+                    documento: req.body.documento,
                     tag: req.body.tag
                 }
 
@@ -317,13 +325,13 @@ module.exports = class UsuariosController {
                 }
             } else {
                 const dados = {
-                    id_atividade: req.body.id_atividade,
-                    id_ordem: req.body.id_ordem,
+                    id_atividade: Number(req.body.id_atividade),
+                    id_ordem: Number(req.body.id_ordem),
                     usuario: req.body.usuario,
                     titulo: req.body.titulo,
                     texto: req.body.texto,
                     link: req.body.link,
-                    imageName: req.body.imageName,
+                    imageName:  imagem,
                     tag: req.body.tag
                 }
                 console.log("dados", dados);
@@ -376,7 +384,7 @@ module.exports = class UsuariosController {
     async obterTutoriais(req, res) {
         try {
             const response = await this.atividadeServices.obterTutoriais();
-            console.log("ret", response);
+      //      console.log("ret", response);
             return res.status(200).send(response);
         } catch (error) {
             return res.status(500).send(error);
@@ -384,12 +392,12 @@ module.exports = class UsuariosController {
     }
 
     async obterTutoriaisId(req, res) {
-        console.log("back end ====> obterTutoriaisId ", req.params);
+     //   console.log("back end ====> obterTutoriaisId ", req.params);
 
         const {
             id
         } = req.params
-        console.log("obterTutoriaisId controler =====>", id);
+   //     console.log("obterTutoriaisId controler =====>", id);
 
         try {
             const response = await this.atividadeServices.obterTutoriaisId(id);
@@ -989,6 +997,44 @@ module.exports = class UsuariosController {
     }
 
 
+
+    async docPdf(req, res) {
+        console.log("docPdf", req);
+        
+        try {
+            // O arquivo enviado é acessível através de req.file
+            const file = req.file;
+            if (!file) {
+                return res.status(400).send({
+                    error: 'No file uploaded'
+                });
+            }
+
+            return res.status(200).send(file.filename);
+    
+        } catch (error) {
+            console.log("Erro", error);
+            return res.status(400).send(error.message);
+        } 
+    }
+
+    async docImagem(req, res) {
+        try {
+            // O arquivo enviado é acessível através de req.file
+            const file = req.file;
+            if (!file) {
+                return res.status(400).send({
+                    error: 'No file uploaded'
+                });
+            }
+
+            return res.status(200).send(file.filename);
+    
+        } catch (error) {
+            console.log("Erro", error);
+            return res.status(400).send(error.message);
+        } 
+    }
 
 
 

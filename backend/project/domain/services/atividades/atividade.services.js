@@ -96,8 +96,8 @@ module.exports = class AtividadeServices {
         return retorno
     }
 
-    async deleteTutoriais(dados) {
-        const retorno = await this.atividadeRepository.deleteTutoriais(dados);
+    async deleteTutoriais(id) {
+        const retorno = await this.atividadeRepository.deleteTutoriais(id);
         return retorno
     }
 

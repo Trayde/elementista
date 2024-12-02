@@ -11,15 +11,13 @@
             <div class="dropdown flex-md-grow-1 flex-xl-grow-0">
                 <a @click="criarTutorial(dados)">
                     <!-- <i style="font-size: 25px;" class="mdi mdi-note-plus"></i> -->
-                    <img :src="avatar" style="width: 90px; height: 80px;">
+                    <img :src="avatar" style="width: 130px; height: 120px;">
                 </a>
             </div>
         </div>
         <!-- Spinner que aparece quando loading é true -->
         <div v-if="loading" class="spinner-container">
-            <div class="base_spinner">
-                <img src="../../../public/img/Gotanav2.png" alt="Spinner" class="spinner-image">
-            </div>
+            <div class="base_spinner"> </div>
         </div>
     </div>
     <div class="col-12 grid-margin stretch-card">
@@ -30,7 +28,7 @@
                         <div class="template-demo">
                             <button @click="filterByTag('')"
                                 :class="['btn btn-inverse-orange btn-fw', { 'btn-primary': selectedTag === '' }]">
-                                TODAS
+                                Todas
                             </button>
                             <button v-for="tag in uniqueTags" :key="tag" @click="filterByTag(tag)"
                                 :class="['btn btn-inverse-orange btn-fw', { 'btn-primary': selectedTag === tag }]">
@@ -63,10 +61,13 @@
                 </div>
                 <div class="card-body">
                     <p class="card-title">{{ dados.titulo }}</p>
-                    <img class="card-img-top" :src="dados.link" style="height: 200px;" alt="Card image cap">
+                    <img class="card-img-top" :src="dados.link"  alt="Card image cap">
                     <br><br>
                     <p class="font-weight-500 truncated-text" v-html="sanitizeHtml(dados.texto)"></p>
-                    <a class="btn btn-primary mt-3" @click="verMais(dados)">Ver mais</a>
+                    <a class="btn btn-primary mt-3" @click="verMais(dados.id_atividade)">Ver mais</a>
+                    <br>
+                    <br>
+                    <span class="orange">{{ dados.tag }}</span>
                 </div>
             </div>
         </div>
@@ -79,6 +80,9 @@ import avatar from '../../../public/img/Gotanav2.png'
 import { QuillEditor } from '@vueup/vue-quill';
 import '@vueup/vue-quill/dist/vue-quill.snow.css';
 import DOMPurify from 'dompurify';
+import Swal from 'sweetalert2';
+
+
 //const  arrays = require('../../localStore/turoriais')
 
 import   arrays  from '../../localStore/turoriais'
@@ -101,6 +105,7 @@ export default {
                 link: "",
                 dt_criacao: "",
                 publicada: "",
+                documento:"",
                 tag: ""
             },
             ativiArry: [],
@@ -128,8 +133,8 @@ export default {
             return DOMPurify.sanitize(html);
         },
         async listaAtividades() {
-             const retorno = await ApiMethodsAtividades.obterTutoriais()
-             console.log("reotno tela obterTutoriais listaAtividades", retorno);
+              const retorno = await ApiMethodsAtividades.obterTutoriais()
+            //  console.log("reotno tela obterTutoriais listaAtividades", retorno);
 
     
             this.ativiArry = retorno.map((at) => ({
@@ -143,6 +148,7 @@ export default {
                 imageName: at.imageName,
                 dt_criacao: at.dt_criacao,
                 publicada: at.publicada,
+                documento: at.documento,
                 tag: at.tag
             }));
 
@@ -170,6 +176,13 @@ export default {
                 cancelButtonColor: "#3085d6",
                 confirmButtonText: "Sim, excluir!",
                 cancelButtonText: "Cancelar",
+                willOpen: () => {
+                    // Adiciona um estilo diretamente no ícone
+                    const icon = document.querySelector('.swal2-icon');
+                    if (icon) {
+                        icon.style.marginTop = '20px'; // Ajuste conforme necessário
+                    }
+                }
             });
 
             // Se o usuário confirmar, remove o item
@@ -198,10 +211,9 @@ export default {
         verMais(dados) {
             // Redirecionar para a página de detalhes ou outra página
 
-
             this.$router.push({
                 path: "/ver-tutoriais",
-                query: { nome: dados.arquivo }
+                query: { id: dados  }
             });
 
 
@@ -212,6 +224,40 @@ export default {
 </script>
 
 <style scoped>
+/* Container do spinner */
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+/* Base do spinner */
+.base_spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #f3f3f3; /* Cor do fundo do círculo */
+  border-top: 5px solid #3498db; /* Cor da parte superior que vai girar */
+  border-radius: 50%; /* Faz o círculo */
+  animation: spin 1s linear infinite; /* Gira continuamente */
+}
+
+/* Animação de rotação */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 .nav-link[data-toggle="dropdown"]::after {
     display: none;
 }

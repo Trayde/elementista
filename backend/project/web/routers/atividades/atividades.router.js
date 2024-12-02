@@ -4,7 +4,21 @@ const ctrl = require("../../controllers/atividades/atividades.controller");
 const path = require('path'); // Importação da biblioteca path
 const multer = require('multer');
 const uploadsDir = path.join('/', 'var', 'www', 'html', 'atividades');
+const documentosDir = path.join('/','var', 'www','html',  'documentos');
 const upload = multer({ dest: uploadsDir });
+
+// Configuração do multer para salvar o arquivo com a extensão original
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, documentosDir);
+    },
+    filename: (req, file, cb) => {
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+      const ext = path.extname(file.originalname);
+      cb(null, file.fieldname + '-' + uniqueSuffix + ext);
+    }
+  });
+  const doc = multer({ storage: storage });
 
 const _ctrl = new ctrl();
 
@@ -22,6 +36,8 @@ router.get('/obertVideos',  (req, res) => _ctrl.obertVideos(req, res));
 router.get('/obertVideosId/:id',  (req, res) => _ctrl.obertVideosId(req, res));
 router.get('/deleteAtividade/:id',  (req, res) => _ctrl.deleteAtividade(req, res));
 router.get('/deleteVideos/:id',  (req, res) => _ctrl.deleteVideos(req, res));
+router.get('/deleteAgua/:id',  (req, res) => _ctrl.deleteAgua(req, res));
+router.get('/deleteTutoriais/:id',  (req, res) => _ctrl.deleteTutoriais(req, res));
 router.get('/obterTutoriais',  (req, res) => _ctrl.obterTutoriais(req, res));
 router.get('/obterTutoriaisId/:id',  (req, res) => _ctrl.obterTutoriaisId(req, res));
 router.get('/obterAgua',  (req, res) => _ctrl.obterAgua(req, res));
@@ -35,7 +51,8 @@ router.get('/obterFogoId/:id',  (req, res) => _ctrl.obterFogoId(req, res));
 
 
 
-
+router.post('/docImagem',  doc.single('file'), (req, res) => _ctrl.docImagem(req, res));
+router.post('/docPdf',  doc.single('file'), (req, res) => _ctrl.docPdf(req, res));
 
 
 router.post('/imagensvisitas', upload.single('file'), (req, res) => _ctrl.imagens(req, res));

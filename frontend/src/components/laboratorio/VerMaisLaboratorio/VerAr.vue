@@ -28,7 +28,7 @@
           <div class="col-md-4 stretch-card grid-margin">
             <div class="card">
               <div class="card-body">
-                <p class="card-title">Mix de Atividades</p>
+                <p class="card-title">Mix de atividades</p>
                 <ul class="icon-data-list">
                   <li  v-for="(item, index) in items" :key="index" @click="selectImage(item)">
                     <div class="d-flex">

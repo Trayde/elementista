@@ -7,42 +7,43 @@
                 </div>
             </div>
         </div>
+        <!-- Spinner que aparece quando loading é true -->
         <div v-if="loading" class="spinner-container">
-            <div class="base_spinner">
-                <img src="../../../../public/img/Terralinav2.png" alt="Spinner" class="spinner-image">
-            </div>
+            <div class="base_spinner"> </div>
         </div>
+
     </div>
     <div class="card" style="max-width: 70rem;">
         <form @submit.prevent="salvar">
             <div class="">
-                        <h4 class="modal-body fs-8" id="exampleModalLabel">
-                            <label class="form-label">Link</label>
-                            <input type="text" class="col-12 col-xl-12 mb-xl-0 form-control" v-model="content.link">
-                        </h4>
-                    </div>
-                    <div class="modal-body">
-                        <div class="video-container">
-                            <iframe :src="content.link" title="YouTube video player" frameborder="0"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                referrerpolicy="strict-origin-when-cross-origin" allowfullscreen>
-                            </iframe>
-                        </div>
-                    </div>
+                <h4 class="modal-body fs-8" id="exampleModalLabel">
+                    <label class="form-label">Link</label>
+                    <input type="text" class="col-12 col-xl-12 mb-xl-0 form-control" v-model="content.link">
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div class="video-container">
+                    <iframe :src="content.link" title="YouTube video player" frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        referrerpolicy="strict-origin-when-cross-origin" allowfullscreen>
+                    </iframe>
+                </div>
+            </div>
             <div class="card-body">
                 <div class="">
                     <h4 class="modal-title fs-8" id="exampleModalLabel">
                         <label class="modal-body spacamento-top">Título</label>
-                        <input type="text" class="col-12 col-xl-12 mb-xl-0 form-control spacamento-top" v-model="content.titulo">
-                
+                        <input type="text" class="col-12 col-xl-12 mb-xl-0 form-control spacamento-top"
+                            v-model="content.titulo">
+
                         <input type="text" class="col-4 col-xl-4 mb-xl-0 form-control spacamento-top" placeholder="TAG#"
                             v-model="content.tag">
                     </h4>
-                </div>              
-                    <label for="activAdmin" class="form-control spacamento-top">Descrição Texto</label>
-                    <br>
-                    <div  ref="editorContainer"></div> <!-- Removido o espaço extra -->
-               
+                </div>
+                <label for="activAdmin" class="form-control spacamento-top">Descrição Texto</label>
+                <br>
+                <div ref="editorContainer"></div> <!-- Removido o espaço extra -->
+
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary spacamento-top">Salvar</button>
                 </div>
@@ -106,7 +107,7 @@ export default {
         async show() {
             const id = JSON.parse(this.$route.query.videos);
             console.log("id tela", id);
-            
+
             const response = await ApiMethodsAtividades.obertVideosId(id)
             response.map((dados) => {
                 this.content = {
@@ -122,10 +123,10 @@ export default {
             })
 
             if (this.content.texto) {
-            this.quill.root.innerHTML = this.content.texto;
+                this.quill.root.innerHTML = this.content.texto;
             }
         },
-       
+
         onFileChange(event) {
             const file = event.target.files[0];
             this.content.selectedFile = file;
@@ -137,7 +138,7 @@ export default {
             this.loading = true; // Exibe o spinner
             // Atualiza o conteúdo com o HTML gerado pelo Quill
             this.content.texto = this.quill.root.innerHTML;
-         
+
             const dados = this.content;
             ApiMethodsAtividades.editarVideos(dados).then((res) => {
                 if (res.data === 'sucesso') {
@@ -146,11 +147,11 @@ export default {
                         this.loading = false;
                         this.$router.push("/videos"); // Redirecionar para a rota raiz
                     }, 3000);
-                    
+
                 } else {
                     this.loading = false; // Oculta o spinner em caso de erro
                 }
-                
+
             });
         }
     }
@@ -209,6 +210,7 @@ export default {
     border-radius: 10px;
     /* Aplica o border-radius ao iframe */
 }
+
 /* Container do spinner */
 .spinner-container {
     display: flex;
@@ -225,16 +227,15 @@ export default {
 
 /* Base do spinner */
 .base_spinner {
-    position: relative;
-    width: 100px;
-    height: 100px;
-}
-
-/* Imagem do spinner */
-.spinner-image {
-    width: 100%;
-    height: auto;
-    animation: spin 2s linear infinite;
+    width: 50px;
+    height: 50px;
+    border: 5px solid #f3f3f3;
+    /* Cor do fundo do círculo */
+    border-top: 5px solid #3498db;
+    /* Cor da parte superior que vai girar */
+    border-radius: 50%;
+    /* Faz o círculo */
+    animation: spin 1s linear infinite;
     /* Gira continuamente */
 }
 

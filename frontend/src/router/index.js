@@ -129,7 +129,14 @@ const routes = [
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/laboratorio/criaConteudo/CriaAgua.vue')
   },
-  
+  {
+    path: '/editar-agua',
+    name: 'EditarAgua',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () => import(/* webpackChunkName: "about" */ '../components/laboratorio/modal/ModalEditarAgua.vue')
+  },
   {
     path: '/ver-agua',
     name: 'VerAgua',
@@ -190,7 +197,7 @@ const routes = [
 
 
 
-console.log("log 2");
+//console.log("log 2");
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
@@ -200,16 +207,16 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   // Exemplo: Verificar um parâmetro na query e redirecionar ou manipular a navegação
   const atividadesParam = to.query.tutoriais; // Obtendo o valor da query string 'atividades'
-  console.log("name atividadesParam", atividadesParam);
+  ///console.log("name atividadesParam", atividadesParam);
 
   const atividadesParam2 = to.query.target; // Obtendo o valor da query string 'atividades'
-  console.log("query atividadesParam2", atividadesParam2);
+ /// console.log("query atividadesParam2", atividadesParam2);
 
   const arquivo = to.query.nome; // Obtendo o valor da query string 'atividades'
-  console.log("query arquivo", arquivo);
+ /// console.log("query arquivo", arquivo);
   
   if (atividadesParam === '/redirect') {
-    console.log('Parametro atividades:', atividadesParam);  // Log do valor da query
+ ///   console.log('Parametro atividades:', atividadesParam);  // Log do valor da query
     next({
       path: "/redirect",
       query: { target: atividadesParam2 , nome: arquivo}

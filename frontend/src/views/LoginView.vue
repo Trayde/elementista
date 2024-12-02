@@ -39,7 +39,7 @@ export default {
                 router.push(redirectAfterLogin.value); // Redireciona para a rota após login
 
 
-                console.log("arquivo login", arquivoIno.value);
+            //    console.log("arquivo login", arquivoIno.value);
 
 
                 router.push({

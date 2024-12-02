@@ -9,10 +9,9 @@
         </div>
         <!-- Spinner que aparece quando loading é true -->
         <div v-if="loading" class="spinner-container">
-            <div class="base_spinner">
-                <img src="../../../../public/img/Arteusv2.png" alt="Spinner" class="spinner-image">
-            </div>
+            <div class="base_spinner"> </div>
         </div>
+
         <!-- Conteúdo principal -->
         <div class="card">
             <form @submit.prevent="salvar">
@@ -24,7 +23,7 @@
                         alt="Card image cap">
                 </div>
                 <div class="modal-body">
-                    <label for="imageUpload" class="form-label">Upload de Imagem &nbsp;</label>
+                    <label for="imageUpload" class="form-label">Upload de imagem &nbsp;</label>
                     <input type="file" @change="onFileChange">
                 </div>
                 <div class="card-body">
@@ -126,14 +125,14 @@ export default {
             this.loading = true; // Exibe o spinner
             this.content.texto = this.quill.root.innerHTML;
 
-           
-            
+
+
             const dados = this.content;
             ApiMethodsAtividades.editarAtividade(dados).then((res) => {
                 if (res.data === 'sucesso') {
-                    
+
                     this.isVisible = false;
-                     setTimeout(() => {
+                    setTimeout(() => {
                         this.loading = false;
                         this.$router.push("/atividades"); // Redirecionar para a rota raiz
                     }, 3000);
@@ -162,16 +161,16 @@ export default {
 
 /* Base do spinner */
 .base_spinner {
-    position: relative;
-    width: 100px;
-    height: 100px;
-}
-
-/* Imagem do spinner */
-.spinner-image {
-    width: 100%;
-    height: auto;
-    animation: spin 2s linear infinite; /* Gira continuamente */
+    width: 50px;
+    height: 50px;
+    border: 5px solid #f3f3f3;
+    /* Cor do fundo do círculo */
+    border-top: 5px solid #3498db;
+    /* Cor da parte superior que vai girar */
+    border-radius: 50%;
+    /* Faz o círculo */
+    animation: spin 1s linear infinite;
+    /* Gira continuamente */
 }
 
 /* Animação de rotação */
@@ -179,6 +178,7 @@ export default {
     0% {
         transform: rotate(0deg);
     }
+
     100% {
         transform: rotate(360deg);
     }

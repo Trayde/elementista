@@ -1,4 +1,5 @@
 
+const { default: dados } = require('@/localStore/turoriais');
 const axios = require('axios');
 
 // Objeto contendo os métodos para fazer requisições
@@ -63,6 +64,9 @@ const apiMethodsAtividades = {
     formData.append('link', dados.link);
     if (dados.selectedFile) {
       formData.append('file', dados.selectedFile);
+    }
+    if (dados.selectedFileDocumento){
+      formData.append('file', dados.selectedFileDocumento);
     }
     formData.append('imageName', dados.imageName);
     formData.append('tag', dados.tag);
@@ -160,6 +164,9 @@ const apiMethodsAtividades = {
   },
 
   async gravaTutoriais(dados) {
+
+    console.log("grava tutorial", dados);
+    
     const formData = new FormData();
 
     formData.append('id_atividade', dados.id_atividade);
@@ -171,6 +178,9 @@ const apiMethodsAtividades = {
     formData.append('link', dados.link);
     if (dados.selectedFile) {
       formData.append('file', dados.selectedFile);
+    }
+    if (dados.selectedFileDocumento) {    
+    formData.append('documento', dados.selectedFileDocumento);
     }
     formData.append('imageName', dados.imageName);
     formData.append('tag', dados.tag);
@@ -192,7 +202,7 @@ const apiMethodsAtividades = {
     try {
       let response = []
       response = await axios.get('https://apienerge.apololab.net:5000/atividades/obterTutoriais');
-      console.log("response.data", response.data);
+  //    console.log("response.data", response.data);
       return response.data;
     } catch (error) {
       console.error('Erro ao obter Tutoriais:', error);
@@ -214,17 +224,24 @@ const apiMethodsAtividades = {
     }
   },
   
-  async editarTutoriais(dados)
+  async editarTutoriais(dados)  
   {
+    
+  console.log("editarTutoriais", dados);
     const formData = new FormData();
     formData.append('id_atividade', dados.id_atividade);
     formData.append('id_ordem', dados.id_ordem);
     formData.append('usuario', dados.usuario);
     formData.append('titulo', dados.titulo);
-    formData.append('texto', dados.texto);
     formData.append('arquivo', dados.arquivo);
+    formData.append('texto', dados.texto);
     formData.append('link', dados.link);
-    formData.append('file', dados.selectedFile);
+    if (dados.selectedFile) {
+      formData.append('file', dados.selectedFile);
+    }
+    if (dados.selectedFileDocumento) {    
+    formData.append('documento', dados.selectedFileDocumento);
+    }
     formData.append('imageName', dados.imageName);
     formData.append('tag', dados.tag);
 

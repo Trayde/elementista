@@ -33,14 +33,14 @@ export default {
     const atividadesParam = route.query.atividades;
 
    
-     console.log("log atividadesParam", atividadesParam);
+   //  console.log("log atividadesParam", atividadesParam);
 
     // Verifica se o parâmetro "atividades" está presente e redireciona
     const checkRedirect = () => {
       const atividadesParam = route.query.atividades;
 
    
-      console.log("log atividadesParam", atividadesParam);
+  //    console.log("log atividadesParam", atividadesParam);
 
 
 

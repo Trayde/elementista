@@ -26,7 +26,7 @@
         if (isAuthenticated.value) {
           router.push(targetRoute); // Redireciona para a rota alvo diretamente
         } else {
-            console.log("query rediret", targetRoute, '   ', arquivoIno);
+       //     console.log("query rediret", targetRoute, '   ', arquivoIno);
           // Salva a rota alvo para redirecionar após login
           store.commit('auth/setRedirectAfterLogin', targetRoute);
           store.commit('arquivo/setArquivo', arquivoIno);

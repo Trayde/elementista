@@ -11948,6 +11948,8 @@ input[type="button"].btn-block {
   white-space: nowrap;
   background-color: transparent;
   border: 0;
+  font-family: inherit;
+  font-size: inherit;
 }
 
 .dropdown-item:hover, .dropdown-item:focus {
@@ -11985,6 +11987,7 @@ input[type="button"].btn-block {
   display: block;
   padding: 0.25rem 1.5rem;
   color: #1F1F1F;
+  
 }
 
 .btn-group, .fc .fc-button-group,
@@ -22026,7 +22029,7 @@ code {
 .card .card-title {
   color: #010101;
   margin-bottom: 1.2rem;
-  text-transform: capitalize;
+  /* text-transform: capitalize; */
   font-size: 1.125rem;
   font-weight: 600;
 }

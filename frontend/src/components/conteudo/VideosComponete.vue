@@ -10,14 +10,13 @@
         <div class="justify-content-end d-flex">
             <div class="dropdown flex-md-grow-1 flex-xl-grow-0">
                 <a @click="criarAtividade(dados)">
-                    <img :src="avatar" style="width: 90px; height: 95px;">
+                    <img :src="avatar" style="width: 130px; height: 120px;">
                 </a>
             </div>
         </div>
+        <!-- Spinner que aparece quando loading é true -->
         <div v-if="loading" class="spinner-container">
-            <div class="base_spinner">
-                <img src="../../../public/img/Terralinav2.png" alt="Spinner" class="spinner-image">
-            </div>
+            <div class="base_spinner"> </div>
         </div>
     </div>
     <div class="col-12 grid-margin stretch-card">
@@ -42,19 +41,19 @@
     </div>
     <div class="row">
         <!-- <div class="col-md-4 "> -->
-            <div v-for="(dados, index) in filteredAtividades" :key="index" class="col-md-4 grid-margin">
-                <div class="card">
-                    <div class="card-body">
-                        <!-- <p class="card-title">{{ dados.titulo }}</p> -->
-                        <div class="video-container">
-                            <iframe :src="dados.link" title="YouTube video player" frameborder="0"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                referrerpolicy="strict-origin-when-cross-origin" allowfullscreen>
-                            </iframe>
-                        </div>
-                        
-                        <br><br>
-                        <div class="icon-right">
+        <div v-for="(dados, index) in filteredAtividades" :key="index" class="col-md-4 grid-margin">
+            <div class="card">
+                <div class="card-body">
+                    <!-- <p class="card-title">{{ dados.titulo }}</p> -->
+                    <div class="video-container">
+                        <iframe :src="dados.link" title="YouTube video player" frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen>
+                        </iframe>
+                    </div>
+
+                    <br><br>
+                    <div class="icon-right">
                         <ul class="navbar-nav navbar-nav-right">
                             <li class="nav-item dropdown">
                             <li class="nav-item nav-profile dropdown">
@@ -71,11 +70,12 @@
                             </li>
                         </ul>
                     </div>
-                        <p class="font-weight-500 truncated-text" v-html="sanitizeHtml(dados.texto)"></p>
-                        
-                    </div>
+                    <p class="font-weight-500 truncated-text" v-html="sanitizeHtml(dados.texto)"></p>
+                    <br>
+                    <span class="orange">{{ dados.tag }}</span>
                 </div>
             </div>
+        </div>
         <!-- </div> -->
     </div>
 </template>
@@ -114,10 +114,10 @@ export default {
         }
     },
     computed: {
-        
+
         filteredAtividades() {
 
-  
+
 
             if (this.selectedTag) {
                 return this.ativiArry.filter(atividade => atividade.tag === this.selectedTag);
@@ -180,21 +180,28 @@ export default {
                 cancelButtonColor: "#3085d6",
                 confirmButtonText: "Sim, excluir!",
                 cancelButtonText: "Cancelar",
+                willOpen: () => {
+                    // Adiciona um estilo diretamente no ícone
+                    const icon = document.querySelector('.swal2-icon');
+                    if (icon) {
+                        icon.style.marginTop = '20px'; // Ajuste conforme necessário
+                    }
+                }
             });
 
             // Se o usuário confirmar, remove o item
             if (result.isConfirmed) {
                 this.deleteItem(itemId);
-               
+
             }
         },
         deleteItem(itemId) {
-            this.loading = true 
-           ApiMethodsAtividades.deleteVideos(itemId).then((res) => {
-            console.log("delete", res);
-            
+            this.loading = true
+            ApiMethodsAtividades.deleteVideos(itemId).then((res) => {
+                console.log("delete", res);
+
                 if (res.mensagen === 'sucesso') {
-                    
+
                     this.isVisible = false;
                     setTimeout(() => {
                         this.loading = false;
@@ -283,16 +290,15 @@ export default {
 
 /* Base do spinner */
 .base_spinner {
-    position: relative;
-    width: 100px;
-    height: 100px;
-}
-
-/* Imagem do spinner */
-.spinner-image {
-    width: 100%;
-    height: auto;
-    animation: spin 2s linear infinite;
+    width: 50px;
+    height: 50px;
+    border: 5px solid #f3f3f3;
+    /* Cor do fundo do círculo */
+    border-top: 5px solid #3498db;
+    /* Cor da parte superior que vai girar */
+    border-radius: 50%;
+    /* Faz o círculo */
+    animation: spin 1s linear infinite;
     /* Gira continuamente */
 }
 

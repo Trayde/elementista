@@ -23,7 +23,7 @@
                     style="height: 400px" alt="Card image cap">
             </div>
             <div class="modal-body">
-                <label for="imageUpload" class="form-label">Upload de Imagem&nbsp;</label>
+                <label for="imageUpload" class="form-label">Upload de imagem&nbsp;</label>
                 <input type="file" @change="onFileChange">
             </div>
             <div class="card-body">
