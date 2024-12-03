@@ -23,22 +23,41 @@
                     alt="Card image cap">
             </div>
             <div class="modal-body">
-                <label for="imageUpload" class="form-label">Upload de imagem &nbsp;</label>
-                <input type="file" @change="onFileChange">
+                <div class="upload-container">
+                    <div class="drag-drop-area"  @dragleave="dragging = false"
+                        @click="abrirSeletorImagem" :class="{ dragging }">
+                        <p v-if="!content.selectedFile">
+                            Clique para selecionar a imagem.
+                        </p>
+                        <p v-else>
+                            imagem selecionado: <strong>{{ content.imageName }}</strong>
+                        </p>
+                        <input type="file" ref="file" @change="onFileChange" style="display: none;"  />
+                    </div>
+                </div>
+                <hr>
+                <div class="upload-container">
+                    <div class="drag-drop-area"  @dragleave="dragging = false"
+                    @click="abrirSeletor" :class="{ dragging }">
+                        <p v-if="!content.selectedFileDocumento">
+                             Clique para selecionar material.
+                        </p>
+                        <p v-else>
+                            material selecionado: <strong>{{ content.arquivo }}</strong>
+                        </p>
+                        <input type="file" ref="arquivo" @change="importar" style="display: none;" />
+                    </div>
+                </div>
             </div>
             <div class="card-body">
                 <div class="">
-
-                    <label class="form-label">Título</label>
+                   <label class="form-label">Título</label>
                     <input type="text" class="col-12 col-xl-12 mb-xl-0 form-control spacamento-top"
                         v-model="content.titulo">
+                        <br>
                     <label class="form-label spacamento-top">TAG</label>
                     <input type="text" class="col-4 col-xl-4 mb-xl-0 form-control" placeholder="TAG#"
                         v-model="content.tag">
-
-                    <label class="form-label spacamento-top">Nome arquivo .ino</label>
-                    <input type="text" class="col-4 col-xl-4 mb-xl-0 form-control" placeholder="TAG#"
-                        v-model="content.arquivo">
                 </div>
                 <div class="">
                     <label for="activAdmin" class="form-label spacamento-top">Descrição Texto</label>
@@ -54,6 +73,7 @@
 
 <script>
 import ApiMethodsAtividades from '@/views/conteudo/service/service.atividades'
+import axios from 'axios';
 import avatar from '../../../../public/img/Gotanav2.png'
 import Quill from 'quill';
 import 'quill/dist/quill.snow.css';
@@ -64,6 +84,7 @@ export default {
         return {
             isVisible: false,
             loading: false,
+            dragging: false,
             content: {
                 id_atividade: null,
                 id_ordem: 0,
@@ -71,8 +92,9 @@ export default {
                 titulo: "",
                 texto: "", // Este campo armazenará o HTML gerado pelo Quill
                 link: "",
-                arquivo: "",
                 selectedFile: null,
+                selectedFileDocumento: null,
+                arquivo: "", // nome do arquivo
                 imageName: "", // Adiciona o nome da imagem
                 tag: ""
             },
@@ -117,8 +139,8 @@ export default {
                     usuario: dados.usuario,
                     titulo: dados.titulo,
                     texto: dados.texto, // Este campo armazenará o HTML gerado pelo Quill
-                    arquivo: dados.arquivo,
                     link: `https://apienerge.apololab.net/atividades/${dados.imageName}`,
+                    documento : dados.documento,
                     imageName: dados.imageName, // Adiciona o nome da imagem
                     tag: dados.tag
                 }
@@ -128,13 +150,75 @@ export default {
                 this.quill.root.innerHTML = this.content.texto;
             }
         },
-
-        onFileChange(event) {
-            const file = event.target.files[0];
-            this.content.selectedFile = file;
-            this.content.link = URL.createObjectURL(file); // Atualiza a visualização da imagem
-            this.content.imageName = file.name; // Armazena o nome do arquivo
+        onDrop(event) {
+            this.dragging = false;
+            const file = event.dataTransfer.files[0];
+            this.handleFile(file);
         },
+        onDropArquivo(event) {
+            this.dragging = false;
+            this.$refs.arquivo.click();
+        },
+        onFileChange(event) {
+            console.log("onFileChange", event.dataTransfer);
+
+            const file = event.target.files[0];
+            this.handleFile(file);
+        },
+        onFileChangeAruivo(event) {
+            console.log("onFileChange", event.target.files[0]);
+
+            const file = event.target.files[0];
+            this.importar(file);
+        },
+        abrirSeletorImagem() {
+            this.$refs.file.click();
+        },
+        abrirSeletor() {
+            this.$refs.arquivo.click();
+        },
+        handleFile(file) {
+            console.log("arquivo solcitado ", file);
+
+            if (file) {
+                this.content.selectedFile = file;
+                this.content.link = URL.createObjectURL(file); // Visualização
+                this.content.imageName = file.name;
+            }
+        },
+        async importar(event) {
+            const file = event.target.files[0];
+            console.log("import criet", file);
+            
+            let arq = file;
+            const fileType = file.type;
+            this.content.arquivo = file.name;
+            const formData = new FormData();
+            formData.append('file', arq);
+
+            try {
+                let res;
+                if (fileType === 'application/pdf') {
+                    res = await axios.post('https://apienerge.apololab.net:5000/atividades/docPdf', formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                        },
+                    });
+                } else {
+                    res = await axios.post('https://apienerge.apololab.net:5000/atividades/docImagem', formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                        },
+                    });
+                }
+
+                this.content.selectedFileDocumento = res.data
+                console.log("this.this.content.selectedFileDocumento", this.content.selectedFileDocumento);
+
+            } catch (error) {
+                console.error("Erro durante o upload:", error);
+            }
+        },  
 
         salvar() {
             this.loading = true
@@ -160,6 +244,38 @@ export default {
 
 
 <style scoped>
+.upload-container {
+    max-width: 600px;
+    margin: 20px auto;
+    text-align: center;
+}
+
+.drag-drop-area {
+    border: 2px dashed #ccc;
+    border-radius: 10px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    transition: background-color 0.2s, border-color 0.2s;
+    cursor: pointer;
+}
+
+.drag-drop-area.dragging {
+    background-color: #eaf6ff;
+    border-color: #3498db;
+}
+
+.preview-area {
+    margin-top: 20px;
+}
+
+.image-preview {
+    width: 100%;
+    max-height: 300px;
+    object-fit: contain;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+}
+
 /* Container do spinner */
 .spinner-container {
     display: flex;

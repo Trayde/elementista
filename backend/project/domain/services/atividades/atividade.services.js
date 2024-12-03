@@ -135,6 +135,13 @@ module.exports = class AtividadeServices {
         return retorno
     }
 
+    async gravaAr(dados) {
+        console.log("obterArId ===> service", dados);
+
+        const retorno = await this.atividadeRepository.gravaAr(dados);
+        return retorno
+    }
+
     async obterArId(id) {
         console.log("obterArId ===> service", id);
 
@@ -154,6 +161,11 @@ module.exports = class AtividadeServices {
 
     async obterTerra() {
         const retorno = await this.atividadeRepository.obterTerra();
+        return retorno
+    }
+
+    async gravaTerra(dados) {
+        const retorno = await this.atividadeRepository.gravaTerra(dados);
         return retorno
     }
 

@@ -10,8 +10,8 @@
         <div class="justify-content-end d-flex">
             <div class="dropdown flex-md-grow-1 flex-xl-grow-0">
                 <a @click="criarTutorial(dados)">
-                    <!-- <i style="font-size: 25px;" class="mdi mdi-note-plus"></i> -->
-                    <img :src="avatar" style="width: 130px; height: 120px;">
+                    <i style="font-size: 40px;" class="mdi mdi-note-plus"></i>
+                    
                 </a>
             </div>
         </div>
@@ -64,7 +64,7 @@
                     <img class="card-img-top" :src="dados.link"  alt="Card image cap">
                     <br><br>
                     <p class="font-weight-500 truncated-text" v-html="sanitizeHtml(dados.texto)"></p>
-                    <a class="btn btn-primary mt-3" @click="verMais(dados)">Ver mais</a>
+                    <a class="btn btn-primary mt-3" @click="verMais(dados.id_atividade)">Ver mais</a>
                     <br>
                     <br>
                     <span class="orange">{{ dados.tag }}</span>
@@ -104,6 +104,7 @@ export default {
                 link: "",
                 dt_criacao: "",
                 publicada: "",
+                documento:"",
                 tag: ""
             },
             ativiArry: [],
@@ -135,7 +136,7 @@ export default {
              console.log("reotno tela obterTutoriais listaobterAgua", retorno);
 
     
-            this.ativiArry = retorno.map((at) => ({
+             this.ativiArry = retorno.map((at) => ({
                 id_atividade: at.id_atividade,
                 id_ordem: at.id_ordem,
                 usuario: at.usuario,
@@ -146,6 +147,7 @@ export default {
                 imageName: at.imageName,
                 dt_criacao: at.dt_criacao,
                 publicada: at.publicada,
+                documento: at.documento,
                 tag: at.tag
             }));
 
@@ -211,7 +213,7 @@ export default {
 
             this.$router.push({
                 path: "/ver-agua",
-                query: { nome: dados.arquivo }
+                query: { id: dados  }
             });
 
 

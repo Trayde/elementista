@@ -3,7 +3,7 @@
         <div class="col-md-10 grid-margin">
             <div class="row">
                 <div class="col-12 col-xl-8 mb-4 mb-xl-0">
-                    <h3 class="font-weight-bold white">Criar Atividades</h3>
+                    <h3 class="font-weight-bold white">Criar Terra</h3>
                 </div>
             </div>
         </div>
@@ -196,14 +196,14 @@ export default {
 
             console.log("salve", this.content);
             const dados = this.content;
-            ApiMethodsAtividades.gravaAtividade(dados).then((res) => {
+            ApiMethodsAtividades.gravaTerra(dados).then((res) => {
                 console.log("res tela", res);
 
                 if (res.data === 'sucesso') {
                     this.isVisible = false;
                     setTimeout(() => {
                         this.loading = false;
-                        this.$router.push("/atividades"); // Redirecionar para a rota raiz
+                        this.$router.push("/terra"); // Redirecionar para a rota raiz
                     }, 3000);
 
                 } else {

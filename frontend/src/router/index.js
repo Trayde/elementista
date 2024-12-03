@@ -40,7 +40,7 @@ const routes = [
   },
   
   {
-    path: '/ver-conteudo',
+    path: '/ver-atividades',
     name: 'VerConteudo',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
@@ -154,6 +154,22 @@ const routes = [
     component: () => import(/* webpackChunkName: "about" */ '../views/laboratorio/Ar.vue')
   },
   {
+    path: '/cria-ar',
+    name: 'Cria-ar',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () => import(/* webpackChunkName: "about" */ '../views/laboratorio/criaConteudo/CriaAr.vue')
+  },
+  {
+    path: '/editar-ar',
+    name: 'Editar-ar',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () => import(/* webpackChunkName: "about" */ '../components/laboratorio/modal/ModalEditarAr.vue')
+  },
+  {
     path: '/ver-ar',
     name: 'VerAr',
     // route level code-splitting
@@ -169,7 +185,31 @@ const routes = [
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/laboratorio/Terra.vue')
   },
-  
+  ,
+  {
+    path: '/ver-terra',
+    name: 'VerTerra',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () => import(/* webpackChunkName: "about" */ '../components/laboratorio/VerMaisLaboratorio/VerTerra.vue')
+  },
+  {
+    path: '/cria-terra',
+    name: 'Cria-terra',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () => import(/* webpackChunkName: "about" */ '../views/laboratorio/criaConteudo/CriaTerra.vue')
+  },
+  {
+    path: '/editar-terra',
+    name: 'Editar-terra',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () => import(/* webpackChunkName: "about" */ '../components/laboratorio/modal/ModalEditarTerra.vue')
+  },
   {
     path: '/fogo',
     name: 'fogo',

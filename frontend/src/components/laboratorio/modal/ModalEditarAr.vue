@@ -3,72 +3,68 @@
         <div class="col-md-10 grid-margin">
             <div class="row">
                 <div class="col-12 col-xl-8 mb-4 mb-xl-0">
-                    <h3 class="font-weight-bold white">Criar Atividades</h3>
+                    <h3 class="font-weight-bold white">Editar Ar</h3>
                 </div>
             </div>
         </div>
+        <!-- Spinner que aparece quando loading é true -->
         <div v-if="loading" class="spinner-container">
-            <!-- Spinner que aparece quando loading é true -->
-            <div v-if="loading" class="spinner-container">
-                <div class="base_spinner"> </div>
-            </div>
+            <div class="base_spinner"> </div>
         </div>
+
     </div>
-    <div class="card" style="max-width: 70rem;">
+    <div class="card">
         <form @submit.prevent="salvar">
             <div v-if="content.link" class="modal-body">
-                <img class="card-img-top" :src="content.link" style="height: 400px;" alt="Card image cap">
+                <img class="card-img-top" :src="content.link" alt="Card image cap">
             </div>
             <div v-else class="modal-body">
-                <img class="card-img-top" src="../../../../public/img/LOGO_ELEMENTISTA_V1_FUNDO-VERDE.jpg"
-                    style="height: 400px" alt="Card image cap">
+                <img class="card-img-top" src="../../../assets/imagemPadao.png" style="height: 400px"
+                    alt="Card image cap">
             </div>
             <div class="modal-body">
                 <div class="upload-container">
-                    <div class="drag-drop-area" @dragover.prevent @dragenter.prevent @dragleave="dragging = false"
-                        @drop.prevent="onDrop" @click="abrirSeletorImagem" :class="{ dragging }">
+                    <div class="drag-drop-area"  @dragleave="dragging = false"
+                        @click="abrirSeletorImagem" :class="{ dragging }">
                         <p v-if="!content.selectedFile">
-                            Arraste e solte um imagem aqui ou clique para selecionar.
+                            Clique para selecionar a imagem.
                         </p>
                         <p v-else>
                             imagem selecionado: <strong>{{ content.imageName }}</strong>
                         </p>
-                        <input type="file" ref="file" @change="onFileChange" style="display: none;" required />
+                        <input type="file" ref="file" @change="onFileChange" style="display: none;"  />
                     </div>
                 </div>
-            </div>
-            <hr>
-            <div class="modal-body">
+                <hr>
                 <div class="upload-container">
-                    <div class="drag-drop-area" @dragover.prevent @dragenter.prevent @dragleave="dragging = false"
-                        @drop.prevent="onDropArquivo" @click="abrirSeletor" :class="{ dragging }">
+                    <div class="drag-drop-area"  @dragleave="dragging = false"
+                    @click="abrirSeletor" :class="{ dragging }">
                         <p v-if="!content.selectedFileDocumento">
-                            Arraste e solte um material aqui ou clique para selecionar.
+                             Clique para selecionar material.
                         </p>
                         <p v-else>
                             material selecionado: <strong>{{ content.arquivo }}</strong>
                         </p>
-                        <input type="file" ref="fileInput" @change="importar" style="display: none;" />
+                        <input type="file" ref="arquivo" @change="importar" style="display: none;" />
                     </div>
                 </div>
             </div>
             <div class="card-body">
                 <div class="">
-                    <h4 class="modal-title fs-8" id="exampleModalLabel">
-                        <label class="form-label">Título</label>
-                        <input type="text" class="col-12 col-xl-12 mb-xl-0 form-control" v-model="content.titulo">
+                   <label class="form-label">Título</label>
+                    <input type="text" class="col-12 col-xl-12 mb-xl-0 form-control spacamento-top"
+                        v-model="content.titulo">
                         <br>
-                        <input type="text" class="col-4 col-xl-4 mb-xl-0 form-control" placeholder="TAG#"
-                            v-model="content.tag">
-                    </h4>
+                    <label class="form-label spacamento-top">TAG</label>
+                    <input type="text" class="col-4 col-xl-4 mb-xl-0 form-control" placeholder="TAG#"
+                        v-model="content.tag">
                 </div>
-                <div>
-                    <br>
-                    <label for="activAdmin" class="form-label">Descrição Texto</label>
-                    <div ref="editorContainer"></div>
+                <div class="">
+                    <label for="activAdmin" class="form-label spacamento-top">Descrição Texto</label>
+                    <div ref="editorContainer"></div> <!-- Removido o espaço extra -->
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Salvar</button>
+                    <button type="submit" class="btn btn-primary spacamento-top">Salvar</button>
                 </div>
             </div>
         </form>
@@ -78,7 +74,7 @@
 <script>
 import ApiMethodsAtividades from '@/views/conteudo/service/service.atividades'
 import axios from 'axios';
-import avatar from '../../../../public/img/Arteusv2.png'
+import avatar from '../../../../public/img/Gotanav2.png'
 import Quill from 'quill';
 import 'quill/dist/quill.snow.css';
 
@@ -86,8 +82,9 @@ export default {
     name: "CriaAtividade",
     data() {
         return {
-            loading: false,
             isVisible: false,
+            loading: false,
+            dragging: false,
             content: {
                 id_atividade: null,
                 id_ordem: 0,
@@ -97,16 +94,17 @@ export default {
                 link: "",
                 selectedFile: null,
                 selectedFileDocumento: null,
-                imageName: "", // Adiciona o nome da imagem
                 arquivo: "", // nome do arquivo
+                imageName: "", // Adiciona o nome da imagem
                 tag: ""
             },
-            dragging: false,
             quill: null,
             avatar: avatar
         };
     },
-
+    created() {
+        this.show()
+    },
     mounted() {
         this.quill = new Quill(this.$refs.editorContainer, {
             theme: 'snow',
@@ -128,6 +126,30 @@ export default {
     },
 
     methods: {
+        sanitizeHtml(html) {
+            return DOMPurify.sanitize(html);
+        },
+        async show() {
+            const id = JSON.parse(this.$route.query.atividades);
+            const response = await ApiMethodsAtividades.obterArId(id)
+            response.map((dados) => {
+                this.content = {
+                    id_atividade: dados.id_atividade,
+                    id_ordem: dados.id_ordem,
+                    usuario: dados.usuario,
+                    titulo: dados.titulo,
+                    texto: dados.texto, // Este campo armazenará o HTML gerado pelo Quill
+                    link: `https://apienerge.apololab.net/atividades/${dados.imageName}`,
+                    documento : dados.documento,
+                    imageName: dados.imageName, // Adiciona o nome da imagem
+                    tag: dados.tag
+                }
+            })
+
+            if (this.content.texto) {
+                this.quill.root.innerHTML = this.content.texto;
+            }
+        },
         onDrop(event) {
             this.dragging = false;
             const file = event.dataTransfer.files[0];
@@ -135,18 +157,25 @@ export default {
         },
         onDropArquivo(event) {
             this.dragging = false;
-            this.$refs.fileInput.click();
+            this.$refs.arquivo.click();
         },
         onFileChange(event) {
-            console.log("onFileChange", event);
+            console.log("onFileChange", event.dataTransfer);
+
             const file = event.target.files[0];
             this.handleFile(file);
+        },
+        onFileChangeAruivo(event) {
+            console.log("onFileChange", event.target.files[0]);
+
+            const file = event.target.files[0];
+            this.importar(file);
         },
         abrirSeletorImagem() {
             this.$refs.file.click();
         },
         abrirSeletor() {
-            this.$refs.fileInput.click();
+            this.$refs.arquivo.click();
         },
         handleFile(file) {
             console.log("arquivo solcitado ", file);
@@ -160,7 +189,7 @@ export default {
         async importar(event) {
             const file = event.target.files[0];
             console.log("import criet", file);
-
+            
             let arq = file;
             const fileType = file.type;
             this.content.arquivo = file.name;
@@ -189,32 +218,30 @@ export default {
             } catch (error) {
                 console.error("Erro durante o upload:", error);
             }
-        },
+        },  
+
         salvar() {
-            this.loading = true;
+            this.loading = true
+            // Atualiza o conteúdo com o HTML gerado pelo Quill
             this.content.texto = this.quill.root.innerHTML;
 
-            console.log("salve", this.content);
             const dados = this.content;
-            ApiMethodsAtividades.gravaAtividade(dados).then((res) => {
-                console.log("res tela", res);
-
+            ApiMethodsAtividades.editarAr(dados).then((res) => {
                 if (res.data === 'sucesso') {
                     this.isVisible = false;
                     setTimeout(() => {
                         this.loading = false;
-                        this.$router.push("/atividades"); // Redirecionar para a rota raiz
+                        this.$router.push("/ar"); // Redirecionar para a rota raiz
                     }, 3000);
-
                 } else {
                     // Tratar o erro
                 }
             });
         }
-
     }
 }
 </script>
+
 
 <style scoped>
 .upload-container {
@@ -248,39 +275,6 @@ export default {
     border: 1px solid #ddd;
     border-radius: 10px;
 }
-
-
-
-.modal {
-    display: block;
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.4);
-}
-
-.close {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 20px;
-    cursor: pointer;
-}
-
-.modal-content {
-    background-color: #fdf8f8;
-    padding: 20px;
-    border: none;
-    width: 100%;
-    height: 100%;
-    box-sizing: border-box;
-    animation: slide-in 0.5s forwards;
-}
-
 
 /* Container do spinner */
 .spinner-container {
@@ -319,5 +313,36 @@ export default {
     100% {
         transform: rotate(360deg);
     }
+}
+
+
+.modal {
+    display: block;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.modal-content {
+    background-color: #fdf8f8;
+    padding: 20px;
+    border: none;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    animation: slide-in 0.5s forwards;
 }
 </style>

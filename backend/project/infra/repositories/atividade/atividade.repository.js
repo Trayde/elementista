@@ -19,8 +19,10 @@ module.exports = class AtividadeRepository {
           usuario: dados.usuario,
           titulo: dados.titulo,
           texto:  dados.texto,
+          arquivo: dados.arquivo,
           link: dados.link,
           imageName: dados.imageName,
+          documento: dados.documento,
           dt_criacao: new Date(),
           publicada: true,
           tag: dados.tag
@@ -49,17 +51,7 @@ module.exports = class AtividadeRepository {
           id_atividade: Number(dados.id_atividade)
         },
   
-        data: {
-          id_ordem: Number(dados.id_ordem),
-          usuario: dados.usuario,
-          titulo: dados.titulo,
-          texto: dados.texto,
-          link: dados.link,
-          imageName: dados.imageName,
-          dt_criacao: new Date(),
-          publicada: true,
-          tag: dados.tag
-        }
+        data: dados
   
       })
 
@@ -334,6 +326,7 @@ module.exports = class AtividadeRepository {
           arquivo: dados.arquivo,
           link: dados.link,
           imageName: dados.imageName,
+          documento: dados.documento,
           dt_criacao: new Date(),
           publicada: true,
           tag: dados.tag
@@ -357,25 +350,11 @@ module.exports = class AtividadeRepository {
 
     try {
       const retorno = await this.prisma.agua.update({
-  
-        where: {
+          where: {
           id_atividade: Number(dados.id_atividade)
         },
-  
-        data: {
-          id_ordem: Number(dados.id_ordem),
-          usuario: dados.usuario,
-          titulo: dados.titulo,
-          texto: dados.texto,
-          arquivo: dados.arquivo,
-          link: dados.link,
-          imageName: dados.imageName,
-          dt_criacao: new Date(),
-          publicada: true,
-          tag: dados.tag
-        }
-  
-      })
+          data: dados
+        })
 
       return retorno
     } catch (error) {
@@ -449,6 +428,7 @@ module.exports = class AtividadeRepository {
           arquivo: dados.arquivo,
           link: dados.link,
           imageName: dados.imageName,
+          documento: dados.documento,
           dt_criacao: new Date(),
           publicada: true,
           tag: dados.tag
@@ -477,18 +457,7 @@ module.exports = class AtividadeRepository {
           id_atividade: Number(dados.id_atividade)
         },
   
-        data: {
-          id_ordem: Number(dados.id_ordem),
-          usuario: dados.usuario,
-          titulo: dados.titulo,
-          texto: dados.texto,
-          arquivo: dados.arquivo,
-          link: dados.link,
-          imageName: dados.imageName,
-          dt_criacao: new Date(),
-          publicada: true,
-          tag: dados.tag
-        }
+        data: dados
   
       })
 
@@ -563,6 +532,7 @@ module.exports = class AtividadeRepository {
           arquivo: dados.arquivo,
           link: dados.link,
           imageName: dados.imageName,
+          documento: dados.documento,
           dt_criacao: new Date(),
           publicada: true,
           tag: dados.tag
@@ -591,18 +561,7 @@ module.exports = class AtividadeRepository {
           id_atividade: Number(dados.id_atividade)
         },
   
-        data: {
-          id_ordem: Number(dados.id_ordem),
-          usuario: dados.usuario,
-          titulo: dados.titulo,
-          texto: dados.texto,
-          arquivo: dados.arquivo,
-          link: dados.link,
-          imageName: dados.imageName,
-          dt_criacao: new Date(),
-          publicada: true,
-          tag: dados.tag
-        }
+        data: dados
   
       })
 

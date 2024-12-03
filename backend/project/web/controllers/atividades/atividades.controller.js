@@ -27,8 +27,7 @@ module.exports = class UsuariosController {
 
     async gravaAtividade(req, res) {
 
-        console.log("controler", req.body.texto);
-
+        console.log("gravaAtividade", req.body.texto);
 
         try {
             const dados = {
@@ -36,14 +35,14 @@ module.exports = class UsuariosController {
                 usuario: req.body.usuario,
                 titulo: req.body.titulo,
                 texto: req.body.texto,
+                arquivo: req.body.arquivo,
                 link: req.body.link,
                 imageName: req.file.filename,
+                documento: req.body.documento,
                 tag: req.body.tag
             }
 
-            console.log("dados", dados);
-
-
+            //    console.log("dados", dados);
             const response = await this.atividadeServices.gravaAtividade(dados);
             if (response) {
                 return res.status(200).send("sucesso");
@@ -57,26 +56,29 @@ module.exports = class UsuariosController {
 
     async editarAtividade(req, res) {
 
-        console.log("editarAtividade", req.body.imageName);
-
+        console.log("editarAtividade", req.body);
+        let imagem
+        if (req.file) {
+            imagem = req.file.filename
+        } else {
+            imagem = req.body.imageName
+        }
         try {
 
-            if (req.file) {
+            if (req.body.documento) {
                 const dados = {
-                    id_atividade: req.body.id_atividade,
-                    id_ordem: req.body.id_ordem,
+                    id_atividade: Number(req.body.id_atividade),
+                    id_ordem: Number(req.body.id_ordem),
                     usuario: req.body.usuario,
                     titulo: req.body.titulo,
                     texto: req.body.texto,
+                    arquivo: req.body.arquivo,
                     link: req.body.link,
-                    imageName: req.file.filename,
+                    imageName: imagem,
+                    documento: req.body.documento,
                     tag: req.body.tag
                 }
-
-
                 console.log("dados preparados para controller =====>", dados);
-
-
                 const response = await this.atividadeServices.editarAtividade(dados);
                 if (response) {
                     return res.status(200).send("sucesso");
@@ -85,13 +87,13 @@ module.exports = class UsuariosController {
                 }
             } else {
                 const dados = {
-                    id_atividade: req.body.id_atividade,
-                    id_ordem: req.body.id_ordem,
+                    id_atividade: Number(req.body.id_atividade),
+                    id_ordem: Number(req.body.id_ordem),
                     usuario: req.body.usuario,
                     titulo: req.body.titulo,
                     texto: req.body.texto,
                     link: req.body.link,
-                    imageName: req.body.imageName,
+                    imageName: imagem,
                     tag: req.body.tag
                 }
                 console.log("dados", dados);
@@ -268,11 +270,11 @@ module.exports = class UsuariosController {
                 arquivo: req.body.arquivo,
                 link: req.body.link,
                 imageName: req.file.filename,
-                documento: req.body.arquivo,
+                documento: req.body.documento,
                 tag: req.body.tag
             }
 
-          //  console.log("dados", dados);
+            //  console.log("dados", dados);
 
 
             const response = await this.atividadeServices.gravaTutoriais(dados);
@@ -289,9 +291,7 @@ module.exports = class UsuariosController {
     async editarTutoriais(req, res) {
 
         console.log("editarTutoriais", req.file);
-
-        let imagem   
-
+        let imagem
         if (req.file) {
             imagem = req.file.filename
         } else {
@@ -312,11 +312,7 @@ module.exports = class UsuariosController {
                     documento: req.body.documento,
                     tag: req.body.tag
                 }
-
-
                 console.log("dados preparados para controller =====>", dados);
-
-
                 const response = await this.atividadeServices.editarTutoriais(dados);
                 if (response) {
                     return res.status(200).send("sucesso");
@@ -331,7 +327,7 @@ module.exports = class UsuariosController {
                     titulo: req.body.titulo,
                     texto: req.body.texto,
                     link: req.body.link,
-                    imageName:  imagem,
+                    imageName: imagem,
                     tag: req.body.tag
                 }
                 console.log("dados", dados);
@@ -384,7 +380,7 @@ module.exports = class UsuariosController {
     async obterTutoriais(req, res) {
         try {
             const response = await this.atividadeServices.obterTutoriais();
-      //      console.log("ret", response);
+            //      console.log("ret", response);
             return res.status(200).send(response);
         } catch (error) {
             return res.status(500).send(error);
@@ -392,12 +388,12 @@ module.exports = class UsuariosController {
     }
 
     async obterTutoriaisId(req, res) {
-     //   console.log("back end ====> obterTutoriaisId ", req.params);
+        //   console.log("back end ====> obterTutoriaisId ", req.params);
 
         const {
             id
         } = req.params
-   //     console.log("obterTutoriaisId controler =====>", id);
+        //     console.log("obterTutoriaisId controler =====>", id);
 
         try {
             const response = await this.atividadeServices.obterTutoriaisId(id);
@@ -422,6 +418,7 @@ module.exports = class UsuariosController {
                 arquivo: req.body.arquivo,
                 link: req.body.link,
                 imageName: req.file.filename,
+                documento: req.body.documento,
                 tag: req.body.tag
             }
 
@@ -437,7 +434,7 @@ module.exports = class UsuariosController {
         } catch (error) {
 
             console.log("error", error);
-            
+
 
             return res.status(500).send(error);
         }
@@ -445,27 +442,30 @@ module.exports = class UsuariosController {
 
     async editarAgua(req, res) {
 
-        console.log("editarAgua", req.body.imageName);
+        console.log("editarTutoriais", req.file);
+        let imagem
+        if (req.file) {
+            imagem = req.file.filename
+        } else {
+            imagem = req.body.imageName
+        }
 
         try {
 
-            if (req.file) {
+            if (req.body.documento) {
                 const dados = {
-                    id_atividade: req.body.id_atividade,
-                    id_ordem: req.body.id_ordem,
+                    id_atividade: Number(req.body.id_atividade),
+                    id_ordem: Number(req.body.id_ordem),
                     usuario: req.body.usuario,
                     titulo: req.body.titulo,
                     texto: req.body.texto,
                     arquivo: req.body.arquivo,
                     link: req.body.link,
-                    imageName: req.file.filename,
+                    imageName: imagem,
+                    documento: req.body.documento,
                     tag: req.body.tag
                 }
-
-
                 console.log("dados preparados para controller =====>", dados);
-
-
                 const response = await this.atividadeServices.editarAgua(dados);
                 if (response) {
                     return res.status(200).send("sucesso");
@@ -474,14 +474,13 @@ module.exports = class UsuariosController {
                 }
             } else {
                 const dados = {
-                    id_atividade: req.body.id_atividade,
-                    id_ordem: req.body.id_ordem,
+                    id_atividade: Number(req.body.id_atividade),
+                    id_ordem: Number(req.body.id_ordem),
                     usuario: req.body.usuario,
                     titulo: req.body.titulo,
                     texto: req.body.texto,
-                    arquivo: req.body.arquivo,
                     link: req.body.link,
-                    imageName: req.body.imageName,
+                    imageName: imagem,
                     tag: req.body.tag
                 }
                 console.log("dados", dados);
@@ -491,8 +490,6 @@ module.exports = class UsuariosController {
                 } else {
                     return res.status(200).send("falha");
                 }
-
-
             }
 
 
@@ -572,8 +569,10 @@ module.exports = class UsuariosController {
                 arquivo: req.body.arquivo,
                 link: req.body.link,
                 imageName: req.file.filename,
+                documento: req.body.documento,
                 tag: req.body.tag
             }
+
 
             console.log("dados Ar", dados);
 
@@ -591,20 +590,26 @@ module.exports = class UsuariosController {
 
     async editarAr(req, res) {
 
-        console.log("editarAr", req.body.imageName);
+        let imagem
+        if (req.file) {
+            imagem = req.file.filename
+        } else {
+            imagem = req.body.imageName
+        }
 
         try {
 
-            if (req.file) {
+            if (req.body.documento) {
                 const dados = {
-                    id_atividade: req.body.id_atividade,
-                    id_ordem: req.body.id_ordem,
+                    id_atividade: Number(req.body.id_atividade),
+                    id_ordem: Number(req.body.id_ordem),
                     usuario: req.body.usuario,
                     titulo: req.body.titulo,
                     texto: req.body.texto,
                     arquivo: req.body.arquivo,
                     link: req.body.link,
-                    imageName: req.file.filename,
+                    imageName: imagem,
+                    documento: req.body.documento,
                     tag: req.body.tag
                 }
 
@@ -618,16 +623,15 @@ module.exports = class UsuariosController {
                 } else {
                     return res.status(200).send("falha");
                 }
-            } else {
+            }  else {
                 const dados = {
-                    id_atividade: req.body.id_atividade,
-                    id_ordem: req.body.id_ordem,
+                    id_atividade: Number(req.body.id_atividade),
+                    id_ordem: Number(req.body.id_ordem),
                     usuario: req.body.usuario,
                     titulo: req.body.titulo,
                     texto: req.body.texto,
-                    arquivo: req.body.arquivo,
                     link: req.body.link,
-                    imageName: req.body.imageName,
+                    imageName: imagem,
                     tag: req.body.tag
                 }
                 console.log("dados", dados);
@@ -718,6 +722,7 @@ module.exports = class UsuariosController {
                 arquivo: req.body.arquivo,
                 link: req.body.link,
                 imageName: req.file.filename,
+                documento: req.body.documento,
                 tag: req.body.tag
             }
 
@@ -739,22 +744,27 @@ module.exports = class UsuariosController {
 
         console.log("editarTerra", req.body.imageName);
 
-        try {
+        let imagem
+        if (req.file) {
+            imagem = req.file.filename
+        } else {
+            imagem = req.body.imageName
+        }  
 
-            if (req.file) {
+        try {
+            if (req.body.documento) {
                 const dados = {
-                    id_atividade: req.body.id_atividade,
-                    id_ordem: req.body.id_ordem,
+                    id_atividade: Number(req.body.id_atividade),
+                    id_ordem: Number(req.body.id_ordem),
                     usuario: req.body.usuario,
                     titulo: req.body.titulo,
                     texto: req.body.texto,
                     arquivo: req.body.arquivo,
                     link: req.body.link,
-                    imageName: req.file.filename,
+                    imageName: imagem,
+                    documento: req.body.documento,
                     tag: req.body.tag
                 }
-
-
                 console.log("dados preparados para controller =====>", dados);
 
 
@@ -766,14 +776,13 @@ module.exports = class UsuariosController {
                 }
             } else {
                 const dados = {
-                    id_atividade: req.body.id_atividade,
-                    id_ordem: req.body.id_ordem,
+                    id_atividade: Number(req.body.id_atividade),
+                    id_ordem: Number(req.body.id_ordem),
                     usuario: req.body.usuario,
                     titulo: req.body.titulo,
                     texto: req.body.texto,
-                    arquivo: req.body.arquivo,
                     link: req.body.link,
-                    imageName: req.body.imageName,
+                    imageName: imagem,
                     tag: req.body.tag
                 }
                 console.log("dados", dados);
@@ -1000,7 +1009,7 @@ module.exports = class UsuariosController {
 
     async docPdf(req, res) {
         console.log("docPdf", req);
-        
+
         try {
             // O arquivo enviado é acessível através de req.file
             const file = req.file;
@@ -1011,11 +1020,11 @@ module.exports = class UsuariosController {
             }
 
             return res.status(200).send(file.filename);
-    
+
         } catch (error) {
             console.log("Erro", error);
             return res.status(400).send(error.message);
-        } 
+        }
     }
 
     async docImagem(req, res) {
@@ -1029,11 +1038,11 @@ module.exports = class UsuariosController {
             }
 
             return res.status(200).send(file.filename);
-    
+
         } catch (error) {
             console.log("Erro", error);
             return res.status(400).send(error.message);
-        } 
+        }
     }
 
 

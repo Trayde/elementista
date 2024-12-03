@@ -23,8 +23,31 @@
                         alt="Card image cap">
                 </div>
                 <div class="modal-body">
-                    <label for="imageUpload" class="form-label">Upload de imagem &nbsp;</label>
-                    <input type="file" @change="onFileChange">
+                    <div class="upload-container">
+                        <div class="drag-drop-area" @dragleave="dragging = false" @click="abrirSeletorImagem"
+                            :class="{ dragging }">
+                            <p v-if="!content.selectedFile">
+                                Clique para selecionar a imagem.
+                            </p>
+                            <p v-else>
+                                imagem selecionado: <strong>{{ content.imageName }}</strong>
+                            </p>
+                            <input type="file" ref="file" @change="onFileChange" style="display: none;" />
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="upload-container">
+                        <div class="drag-drop-area" @dragleave="dragging = false" @click="abrirSeletor"
+                            :class="{ dragging }">
+                            <p v-if="!content.selectedFileDocumento">
+                                Clique para selecionar material.
+                            </p>
+                            <p v-else>
+                                material selecionado: <strong>{{ content.arquivo }}</strong>
+                            </p>
+                            <input type="file" ref="arquivo" @change="importar" style="display: none;" />
+                        </div>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="">
@@ -50,6 +73,7 @@
 </template>
 <script>
 import ApiMethodsAtividades from '@/views/conteudo/service/service.atividades';
+import axios from 'axios';
 import Quill from 'quill';
 import 'quill/dist/quill.snow.css';
 
@@ -59,6 +83,7 @@ export default {
         return {
             loading: false, // Controla o spinner
             isVisible: false,
+            dragging: false,
             content: {
                 id_atividade: null,
                 id_ordem: 0,
@@ -67,6 +92,8 @@ export default {
                 texto: "",
                 link: "",
                 selectedFile: null,
+                selectedFileDocumento: null,
+                arquivo: "", // nome do arquivo
                 imageName: "",
                 tag: ""
             },
@@ -104,33 +131,93 @@ export default {
                     id_ordem: dados.id_ordem,
                     usuario: dados.usuario,
                     titulo: dados.titulo,
-                    texto: dados.texto,
+                    texto: dados.texto, // Este campo armazenará o HTML gerado pelo Quill
                     link: `https://apienerge.apololab.net/atividades/${dados.imageName}`,
-                    imageName: dados.imageName,
+                    documento : dados.documento,
+                    imageName: dados.imageName, // Adiciona o nome da imagem
                     tag: dados.tag
-                };
+                }
             });
 
             if (this.content.texto) {
                 this.quill.root.innerHTML = this.content.texto;
             }
         },
-        onFileChange(event) {
-            const file = event.target.files[0];
-            this.content.selectedFile = file;
-            this.content.link = URL.createObjectURL(file);
-            this.content.imageName = file.name;
+        onDrop(event) {
+            this.dragging = false;
+            const file = event.dataTransfer.files[0];
+            this.handleFile(file);
         },
+        onDropArquivo(event) {
+            this.dragging = false;
+            this.$refs.arquivo.click();
+        },
+        onFileChange(event) {
+            console.log("onFileChange", event.dataTransfer);
+
+            const file = event.target.files[0];
+            this.handleFile(file);
+        },
+        onFileChangeAruivo(event) {
+            console.log("onFileChange", event.target.files[0]);
+
+            const file = event.target.files[0];
+            this.importar(file);
+        },
+        abrirSeletorImagem() {
+            this.$refs.file.click();
+        },
+        abrirSeletor() {
+            this.$refs.arquivo.click();
+        },
+        handleFile(file) {
+            console.log("arquivo solcitado ", file);
+
+            if (file) {
+                this.content.selectedFile = file;
+                this.content.link = URL.createObjectURL(file); // Visualização
+                this.content.imageName = file.name;
+            }
+        },
+        async importar(event) {
+            const file = event.target.files[0];
+            console.log("import criet", file);
+            
+            let arq = file;
+            const fileType = file.type;
+            this.content.arquivo = file.name;
+            const formData = new FormData();
+            formData.append('file', arq);
+
+            try {
+                let res;
+                if (fileType === 'application/pdf') {
+                    res = await axios.post('https://apienerge.apololab.net:5000/atividades/docPdf', formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                        },
+                    });
+                } else {
+                    res = await axios.post('https://apienerge.apololab.net:5000/atividades/docImagem', formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                        },
+                    });
+                }
+
+                this.content.selectedFileDocumento = res.data
+                console.log("this.this.content.selectedFileDocumento", this.content.selectedFileDocumento);
+
+            } catch (error) {
+                console.error("Erro durante o upload:", error);
+            }
+        },   
         salvar() {
             this.loading = true; // Exibe o spinner
             this.content.texto = this.quill.root.innerHTML;
-
-
-
             const dados = this.content;
-            ApiMethodsAtividades.editarAtividade(dados).then((res) => {
+             ApiMethodsAtividades.editarAtividade(dados).then((res) => {
                 if (res.data === 'sucesso') {
-
                     this.isVisible = false;
                     setTimeout(() => {
                         this.loading = false;
@@ -145,6 +232,40 @@ export default {
 };
 </script>
 <style scoped>
+.upload-container {
+    max-width: 600px;
+    margin: 20px auto;
+    text-align: center;
+}
+
+.drag-drop-area {
+    border: 2px dashed #ccc;
+    border-radius: 10px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    transition: background-color 0.2s, border-color 0.2s;
+    cursor: pointer;
+}
+
+.drag-drop-area.dragging {
+    background-color: #eaf6ff;
+    border-color: #3498db;
+}
+
+.preview-area {
+    margin-top: 20px;
+}
+
+.image-preview {
+    width: 100%;
+    max-height: 300px;
+    object-fit: contain;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+}
+
+
+
 /* Container do spinner */
 .spinner-container {
     display: flex;

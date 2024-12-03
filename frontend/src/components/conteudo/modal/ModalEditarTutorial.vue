@@ -50,7 +50,6 @@
             </div>
             <div class="card-body">
                 <div class="">
-
                     <label class="form-label">Título</label>
                     <input type="text" class="col-12 col-xl-12 mb-xl-0 form-control spacamento-top"
                         v-model="content.titulo">
@@ -126,6 +125,27 @@ export default {
     },
 
     methods: {
+        async show() {
+            const id = JSON.parse(this.$route.query.atividades);
+            const response = await ApiMethodsAtividades.obterTutoriaisId(id)
+            response.map((dados) => {
+                this.content = {
+                    id_atividade: dados.id_atividade,
+                    id_ordem: dados.id_ordem,
+                    usuario: dados.usuario,
+                    titulo: dados.titulo,
+                    texto: dados.texto, // Este campo armazenará o HTML gerado pelo Quill
+                    link: `https://apienerge.apololab.net/atividades/${dados.imageName}`,
+                    documento : dados.documento,
+                    imageName: dados.imageName, // Adiciona o nome da imagem
+                    tag: dados.tag
+                }
+            })
+
+            if (this.content.texto) {
+                this.quill.root.innerHTML = this.content.texto;
+            }
+        },
         sanitizeHtml(html) {
             return DOMPurify.sanitize(html);
         },
@@ -198,41 +218,18 @@ export default {
                 console.error("Erro durante o upload:", error);
             }
         },   
-        async show() {
-            const id = JSON.parse(this.$route.query.atividades);
-            const response = await ApiMethodsAtividades.obterTutoriaisId(id)
-            response.map((dados) => {
-                this.content = {
-                    id_atividade: dados.id_atividade,
-                    id_ordem: dados.id_ordem,
-                    usuario: dados.usuario,
-                    titulo: dados.titulo,
-                    texto: dados.texto, // Este campo armazenará o HTML gerado pelo Quill
-                    link: `https://apienerge.apololab.net/atividades/${dados.imageName}`,
-                    documento : dados.documento,
-                    imageName: dados.imageName, // Adiciona o nome da imagem
-                    tag: dados.tag
-                }
-            })
-
-            if (this.content.texto) {
-                this.quill.root.innerHTML = this.content.texto;
-            }
-        },
-       
-
+        
         salvar() {
             this.loading = true
             // Atualiza o conteúdo com o HTML gerado pelo Quill
             this.content.texto = this.quill.root.innerHTML;
-
             const dados = this.content;
             ApiMethodsAtividades.editarTutoriais(dados).then((res) => {
                 if (res.data === 'sucesso') {
                     this.isVisible = false;
                     setTimeout(() => {
                         this.loading = false;
-            //            this.$router.push("/tutoriais"); // Redirecionar para a rota raiz
+                       this.$router.push("/tutoriais"); // Redirecionar para a rota raiz
                     }, 3000);
                 } else {
                     // Tratar o erro

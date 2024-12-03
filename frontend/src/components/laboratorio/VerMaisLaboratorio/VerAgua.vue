@@ -21,6 +21,7 @@
               <p class="font-weight-500 truncated-text" v-html="sanitizeHtml(content.texto)"></p>
             </div>
           </div>
+          <button v-if="content.isArquivo" @click="downloadFile" class="btn btn-primary mt-3 spacamento-top">Baixar Arquivo</button>
         </div>
 
       </div>
@@ -76,46 +77,80 @@ export default {
       return DOMPurify.sanitize(html);
     },
     async show() {
-      const id = this.$route.query;
-      
+ 
       const obterResponse = await ApiMethodsAtividades.obterAgua();
-      const arrays = obterResponse.filter((a) => a.arquivo === id.nome)
+      let arrays = [];
+        const $dados = this.$route.query;
 
-      console.log(arrays[0].id_atividade);
+    ///    console.log("ver-tutoriais", $dados);
+
+        if ($dados.id) {
+          arrays = obterResponse.filter((a) => a.id_atividade === JSON.parse($dados.id));
+        } else if ($dados.nome) {
+          arrays = obterResponse.filter((a) => a.arquivo === $dados.nome);
+        }
+
+        if (arrays.length === 0 || !arrays[0]?.id_atividade) {
+          console.error("Nenhuma atividade encontrada com os parâmetros fornecidos.");
+          return; // Sai do método se não houver correspondência
+        }
 
 
       const response = await ApiMethodsAtividades.obterAguaId(arrays[0].id_atividade)
-
-
       response.map((dados) => {
-        this.content = {
-          id_atividade: dados.id_atividade,
-          id_ordem: dados.id_ordem,
-          usuario: dados.usuario,
-          titulo: dados.titulo,
-          texto: dados.texto, // Este campo armazenará o HTML gerado pelo Quill
-          link: `https://apienerge.apololab.net/atividades/${dados.imageName}`,
-          //link: dados.imageName,
-          imageName: dados.imageName, // Adiciona o nome da imagem
-          tag: dados.tag
-        }
-      })
+     ///     console.log("dentro do map", dados);
+          this.content = {
+            id_atividade: dados.id_atividade,
+            id_ordem: dados.id_ordem,
+            usuario: dados.usuario,
+            titulo: dados.titulo,
+            texto: dados.texto, // Este campo armazenará o HTML gerado pelo Quill
+            isArquivo: dados.documento,
+            link: `https://apienerge.apololab.net/atividades/${dados.imageName}`,
+            imageName: dados.imageName, // Adiciona o nome da imagem
+            tag: dados.tag,
+            arquvio: `https://apienerge.apololab.net/documentos/${dados.documento}`,
+          };
+        });
       console.log("dados tela content", this.content);
     },
+    downloadFile() {
+      
+      const fileName = this.content.arquvio;
+      if (!fileName) {
+        console.error("Nome do arquivo não especificado.");
+        return;
+      }
 
+      // Cria a URL completa para o arquivo no diretório public
+      const fileUrl = this.content.arquvio;
+
+      // Cria um link temporário para download
+      const link = document.createElement('a');
+      link.href = fileUrl;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+
+    },
     async listaCards() {
         const response = await ApiMethodsAtividades.obterAgua()
 
 
-      response.map((dados) => {
+        response.map((dados) => {
+      //  console.log("troca dados ", dados);
+
         this.items.push({
           id_atividade: dados.id_atividade,
           id_ordem: dados.id_ordem,
           usuario: dados.usuario,
           titulo: dados.titulo,
+          isArquivo: dados.documento,
           texto: dados.texto, // Este campo armazenará o HTML gerado pelo Quill
           link: `https://apienerge.apololab.net/atividades/${dados.imageName}`,
-          //link: dados.imageName,
+          arquvio: `https://apienerge.apololab.net/documento/${dados.documento}`,
           imageName: dados.imageName, // Adiciona o nome da imagem
           tag: dados.tag
         })
@@ -128,6 +163,8 @@ export default {
       this.content.link = item.link;
       this.content.titulo = item.titulo;
       this.content.texto = item.texto;
+      this.content.fileName = item.id_atividade;
+      this.content.isArquivo = item.isArquivo;
     }
   }
 }

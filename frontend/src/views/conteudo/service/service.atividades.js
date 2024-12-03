@@ -1,5 +1,6 @@
-
-const { default: dados } = require('@/localStore/turoriais');
+const {
+  default: dados
+} = require('@/localStore/turoriais');
 const axios = require('axios');
 
 // Objeto contendo os métodos para fazer requisições
@@ -41,7 +42,7 @@ const apiMethodsAtividades = {
     }
   },
 
-  async obertVideosId(id){
+  async obertVideosId(id) {
     try {
       let response = []
       response = await axios.get(`https://apienerge.apololab.net:5000/atividades/obertVideosId/${id}`);
@@ -54,23 +55,26 @@ const apiMethodsAtividades = {
   },
 
   async gravaAtividade(dados) {
+
+    console.log("grava gravaAtividade", dados);
     const formData = new FormData();
 
     formData.append('id_atividade', dados.id_atividade);
     formData.append('id_ordem', dados.id_ordem);
     formData.append('usuario', dados.usuario);
     formData.append('titulo', dados.titulo);
+    formData.append('arquivo', dados.arquivo);
     formData.append('texto', dados.texto);
     formData.append('link', dados.link);
     if (dados.selectedFile) {
       formData.append('file', dados.selectedFile);
     }
-    if (dados.selectedFileDocumento){
-      formData.append('file', dados.selectedFileDocumento);
+    if (dados.selectedFileDocumento) {
+      formData.append('documento', dados.selectedFileDocumento);
     }
     formData.append('imageName', dados.imageName);
     formData.append('tag', dados.tag);
-  
+
     try {
       const response = await axios.post('https://apienerge.apololab.net:5000/atividades/gravaAtividade', formData, {
         headers: {
@@ -83,10 +87,10 @@ const apiMethodsAtividades = {
       throw error;
     }
   },
-  
+
 
   async gravaVideos(dados) {
-   
+
     try {
       const response = await axios.post('https://apienerge.apololab.net:5000/atividades/gravaVideos', dados);
 
@@ -98,16 +102,23 @@ const apiMethodsAtividades = {
     }
   },
 
- async editarAtividade(dados)
-  {
+  async editarAtividade(dados) {
+    console.log("service front editar atividades", dados);
+    
     const formData = new FormData();
     formData.append('id_atividade', dados.id_atividade);
     formData.append('id_ordem', dados.id_ordem);
     formData.append('usuario', dados.usuario);
     formData.append('titulo', dados.titulo);
+    formData.append('arquivo', dados.arquivo);
     formData.append('texto', dados.texto);
     formData.append('link', dados.link);
-    formData.append('file', dados.selectedFile);
+    if (dados.selectedFile) {
+      formData.append('file', dados.selectedFile);
+    }
+    if (dados.selectedFileDocumento) {
+      formData.append('documento', dados.selectedFileDocumento);
+    }
     formData.append('imageName', dados.imageName);
     formData.append('tag', dados.tag);
 
@@ -126,8 +137,7 @@ const apiMethodsAtividades = {
     }
   },
 
-  async editarVideos(dados)
-  {
+  async editarVideos(dados) {
     try {
       const response = await axios.post('https://apienerge.apololab.net:5000/atividades/editarVideos', dados);
 
@@ -138,7 +148,7 @@ const apiMethodsAtividades = {
       throw error;
     }
   },
-  
+
   async deleteAtividade(id) {
     try {
       let response = []
@@ -166,7 +176,7 @@ const apiMethodsAtividades = {
   async gravaTutoriais(dados) {
 
     console.log("grava tutorial", dados);
-    
+
     const formData = new FormData();
 
     formData.append('id_atividade', dados.id_atividade);
@@ -179,12 +189,12 @@ const apiMethodsAtividades = {
     if (dados.selectedFile) {
       formData.append('file', dados.selectedFile);
     }
-    if (dados.selectedFileDocumento) {    
-    formData.append('documento', dados.selectedFileDocumento);
+    if (dados.selectedFileDocumento) {
+      formData.append('documento', dados.selectedFileDocumento);
     }
     formData.append('imageName', dados.imageName);
     formData.append('tag', dados.tag);
-  
+
     try {
       const response = await axios.post('https://apienerge.apololab.net:5000/atividades/gravaTutoriais', formData, {
         headers: {
@@ -202,7 +212,7 @@ const apiMethodsAtividades = {
     try {
       let response = []
       response = await axios.get('https://apienerge.apololab.net:5000/atividades/obterTutoriais');
-  //    console.log("response.data", response.data);
+      //    console.log("response.data", response.data);
       return response.data;
     } catch (error) {
       console.error('Erro ao obter Tutoriais:', error);
@@ -212,7 +222,7 @@ const apiMethodsAtividades = {
 
   async obterTutoriaisId(id) {
     console.log("obterTutoriaisId -", id);
-    
+
     try {
       let response = []
       response = await axios.get(`https://apienerge.apololab.net:5000/atividades/obterTutoriaisId/${id}`);
@@ -223,11 +233,10 @@ const apiMethodsAtividades = {
       throw error;
     }
   },
-  
-  async editarTutoriais(dados)  
-  {
-    
-  console.log("editarTutoriais", dados);
+
+  async editarTutoriais(dados) {
+
+    console.log("editarTutoriais", dados);
     const formData = new FormData();
     formData.append('id_atividade', dados.id_atividade);
     formData.append('id_ordem', dados.id_ordem);
@@ -239,8 +248,8 @@ const apiMethodsAtividades = {
     if (dados.selectedFile) {
       formData.append('file', dados.selectedFile);
     }
-    if (dados.selectedFileDocumento) {    
-    formData.append('documento', dados.selectedFileDocumento);
+    if (dados.selectedFileDocumento) {
+      formData.append('documento', dados.selectedFileDocumento);
     }
     formData.append('imageName', dados.imageName);
     formData.append('tag', dados.tag);
@@ -272,8 +281,6 @@ const apiMethodsAtividades = {
     }
   },
 
-
-
   async gravaAgua(dados) {
     const formData = new FormData();
 
@@ -287,9 +294,12 @@ const apiMethodsAtividades = {
     if (dados.selectedFile) {
       formData.append('file', dados.selectedFile);
     }
+    if (dados.selectedFileDocumento) {
+      formData.append('documento', dados.selectedFileDocumento);
+    }
     formData.append('imageName', dados.imageName);
     formData.append('tag', dados.tag);
-  
+
     try {
       const response = await axios.post('https://apienerge.apololab.net:5000/atividades/gravaAgua', formData, {
         headers: {
@@ -317,7 +327,7 @@ const apiMethodsAtividades = {
 
   async obterAguaId(id) {
     console.log("obterAguaId -", id);
-    
+
     try {
       let response = []
       response = await axios.get(`https://apienerge.apololab.net:5000/atividades/obterAguaId/${id}`);
@@ -328,18 +338,23 @@ const apiMethodsAtividades = {
       throw error;
     }
   },
-  
-  async editarAgua(dados)
-  {
+
+  async editarAgua(dados) {
+    console.log("editarAgua", dados);
     const formData = new FormData();
     formData.append('id_atividade', dados.id_atividade);
     formData.append('id_ordem', dados.id_ordem);
     formData.append('usuario', dados.usuario);
     formData.append('titulo', dados.titulo);
-    formData.append('texto', dados.texto);
     formData.append('arquivo', dados.arquivo);
+    formData.append('texto', dados.texto);
     formData.append('link', dados.link);
-    formData.append('file', dados.selectedFile);
+    if (dados.selectedFile) {
+      formData.append('file', dados.selectedFile);
+    }
+    if (dados.selectedFileDocumento) {
+      formData.append('documento', dados.selectedFileDocumento);
+    }
     formData.append('imageName', dados.imageName);
     formData.append('tag', dados.tag);
 
@@ -383,9 +398,12 @@ const apiMethodsAtividades = {
     if (dados.selectedFile) {
       formData.append('file', dados.selectedFile);
     }
+    if (dados.selectedFileDocumento) {
+      formData.append('documento', dados.selectedFileDocumento);
+    }
     formData.append('imageName', dados.imageName);
     formData.append('tag', dados.tag);
-  
+
     try {
       const response = await axios.post('https://apienerge.apololab.net:5000/atividades/gravaAr', formData, {
         headers: {
@@ -413,7 +431,7 @@ const apiMethodsAtividades = {
 
   async obterArId(id) {
     console.log("obterArId -", id);
-    
+
     try {
       let response = []
       response = await axios.get(`https://apienerge.apololab.net:5000/atividades/obterArId/${id}`);
@@ -424,21 +442,25 @@ const apiMethodsAtividades = {
       throw error;
     }
   },
-  
-  async editarAr(dados)
-  {
+
+  async editarAr(dados) {
+    console.log("editarTutoriais", dados);
     const formData = new FormData();
     formData.append('id_atividade', dados.id_atividade);
     formData.append('id_ordem', dados.id_ordem);
     formData.append('usuario', dados.usuario);
     formData.append('titulo', dados.titulo);
-    formData.append('texto', dados.texto);
     formData.append('arquivo', dados.arquivo);
+    formData.append('texto', dados.texto);
     formData.append('link', dados.link);
-    formData.append('file', dados.selectedFile);
+    if (dados.selectedFile) {
+      formData.append('file', dados.selectedFile);
+    }
+    if (dados.selectedFileDocumento) {
+      formData.append('documento', dados.selectedFileDocumento);
+    }
     formData.append('imageName', dados.imageName);
     formData.append('tag', dados.tag);
-
     try {
       const response = await axios.post('https://apienerge.apololab.net:5000/atividades/editarAr', formData, {
         headers: {
@@ -468,7 +490,6 @@ const apiMethodsAtividades = {
 
   async gravaTerra(dados) {
     const formData = new FormData();
-
     formData.append('id_atividade', dados.id_atividade);
     formData.append('id_ordem', dados.id_ordem);
     formData.append('usuario', dados.usuario);
@@ -479,9 +500,12 @@ const apiMethodsAtividades = {
     if (dados.selectedFile) {
       formData.append('file', dados.selectedFile);
     }
+    if (dados.selectedFileDocumento) {
+      formData.append('documento', dados.selectedFileDocumento);
+    }
     formData.append('imageName', dados.imageName);
     formData.append('tag', dados.tag);
-  
+
     try {
       const response = await axios.post('https://apienerge.apololab.net:5000/atividades/gravaTerra', formData, {
         headers: {
@@ -509,7 +533,7 @@ const apiMethodsAtividades = {
 
   async obterTerraId(id) {
     console.log("obterTerraId -", id);
-    
+
     try {
       let response = []
       response = await axios.get(`https://apienerge.apololab.net:5000/atividades/obterTerraId/${id}`);
@@ -520,18 +544,22 @@ const apiMethodsAtividades = {
       throw error;
     }
   },
-  
-  async editarTerra(dados)
-  {
+
+  async editarTerra(dados) {
     const formData = new FormData();
     formData.append('id_atividade', dados.id_atividade);
     formData.append('id_ordem', dados.id_ordem);
     formData.append('usuario', dados.usuario);
     formData.append('titulo', dados.titulo);
-    formData.append('texto', dados.texto);
     formData.append('arquivo', dados.arquivo);
+    formData.append('texto', dados.texto);
     formData.append('link', dados.link);
-    formData.append('file', dados.selectedFile);
+    if (dados.selectedFile) {
+      formData.append('file', dados.selectedFile);
+    }
+    if (dados.selectedFileDocumento) {
+      formData.append('documento', dados.selectedFileDocumento);
+    }
     formData.append('imageName', dados.imageName);
     formData.append('tag', dados.tag);
 
@@ -577,7 +605,7 @@ const apiMethodsAtividades = {
     }
     formData.append('imageName', dados.imageName);
     formData.append('tag', dados.tag);
-  
+
     try {
       const response = await axios.post('https://apienerge.apololab.net:5000/atividades/gravaFogo', formData, {
         headers: {
@@ -605,7 +633,7 @@ const apiMethodsAtividades = {
 
   async obterFogoId(id) {
     console.log("obterFogoId -", id);
-    
+
     try {
       let response = []
       response = await axios.get(`https://apienerge.apololab.net:5000/atividades/obterFogoId/${id}`);
@@ -616,9 +644,8 @@ const apiMethodsAtividades = {
       throw error;
     }
   },
-  
-  async editarFogo(dados)
-  {
+
+  async editarFogo(dados) {
     const formData = new FormData();
     formData.append('id_atividade', dados.id_atividade);
     formData.append('id_ordem', dados.id_ordem);

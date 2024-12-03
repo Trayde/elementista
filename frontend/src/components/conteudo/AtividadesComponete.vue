@@ -65,7 +65,7 @@
                     <img class="card-img-top" :src="dados.link" alt="Card image cap">
                     <br><br>
                     <p class="font-weight-500 truncated-text" v-html="sanitizeHtml(dados.texto)"></p>
-                    <a class="btn btn-primary mt-3" @click="verMais(dados)">Ver mais</a>
+                    <a class="btn btn-primary mt-3" @click="verMais(dados.id_atividade)">Ver mais</a>
                     <br>
                     <br>
                     <span class="orange">{{ dados.tag }}</span>
@@ -97,9 +97,11 @@ export default {
                 usuario: "",
                 titulo: "",
                 texto: "",
+                arquivo: "",
                 link: "",
                 dt_criacao: "",
                 publicada: "",
+                documento:"",
                 tag: ""
             },
             ativiArry: [],
@@ -202,10 +204,9 @@ export default {
         verMais(dados) {
             // Redirecionar para a página de detalhes ou outra página
 
-
             this.$router.push({
-                path: "/ver-conteudo",
-                query: { atividades: JSON.stringify(dados.id_atividade) }
+                path: "/ver-atividades",
+                query: { id: dados  }
             });
 
 
