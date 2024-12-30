@@ -17,7 +17,6 @@ const apiMethodsAtividades = {
       throw error;
     }
   },
-
   async obertAtividadeId(id) {
     try {
       let response = []
